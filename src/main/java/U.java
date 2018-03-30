@@ -11,6 +11,7 @@ import java.util.Iterator;
  */
 public class U { // Compound Unit
 
+	private double lengthFactor = 1; // Not 1 for defined units based on compound units but with different length.
 	ArrayList<BU> components = new ArrayList<BU>(0);
 	
 	//Static list containing all created units. Used for parsing, lookup etc.
@@ -66,22 +67,25 @@ public class U { // Compound Unit
 	public static final U N = new U(U.KG.mul(U.M).div(U.S.mul(U.S)));
 	public static final U CC = new U(CM, 1, "cc", "cubic centimeter", 3);
 
+	/** Empty constructor. */
 	private U() {
 	}
 
-	U(U u) {
-		for (BU c : u.components) {
-			this.components.add(c);
-		}
+	/** Compound unit copy constructor.
+	 *
+	 * @param u the compound unit which to copy
+	 */
+	private U(U u) {
+		this.components.addAll(u.components);
 	}
 	
-	/** Source Base Unit Constructor
+	/** Source Base Unit Constructor. Constructs a new unit from one base unit.
 	 * 
 	 * @param bu The base unit to base new unit on.
 	 * @param lengthFactor The number of old units that goes in one new unit. 
 	 * @param offset The absolute offset. Only used for absolute conversion. All units of same quantity needs to offset to the same point.
-	 * @param shortName 
-	 * @param longName
+	 * @param shortName abbreviation for the new unit
+	 * @param longName full name of the new unit
 	 * @param defPower The power of the new unit compared to the old unit. Ex: L = DM^3 so to define L we need defPower = 3. 
 	 */
 	private U(BU bu, double lengthFactor, double offset, String shortName, String longName, int defPower) {
@@ -90,8 +94,15 @@ public class U { // Compound Unit
 				 new Quantity(bu.getQuantityBase(), power), power, offset);
 		addComponent(newBu, components);
 	}
+
+	public U(U u, double lengthFactor, String shortName) {
+		this.lengthFactor = lengthFactor;
+		for (BU bu : u.components){
+			addComponent(bu, components);
+		}
+	}
 	
-		/** Simple Base Unit Constructor
+		/** Simple Base Unit Constructor. Constructs a compound unit representation of given base unit.
 		 *
 		 * @param bu base unit for this unit
 		 */
@@ -101,6 +112,8 @@ public class U { // Compound Unit
 		}
 		
 			/** Simple BUC. No Base Unit or offset.
+			 *
+			 * Constructs a compound unit given the definition of a base unit.
 			 *
 			 * @param length length of this unit
 			 * @param shortName abbreviation of this unit
@@ -124,6 +137,8 @@ public class U { // Compound Unit
 				}
 	
 	/** Base Unit Constructor, from existing U.
+	 *
+	 * Constructs a new compound unit from the first base unit of a given compound unit, with modified values.
 	 * 
 	 * @param u The old unit to base new unit on. This unit may only have one quantity.
 	 * @param lengthFactor The number of old units that goes in one new unit. 
@@ -135,7 +150,7 @@ public class U { // Compound Unit
 	public U(U u, double lengthFactor, double offset, String shortName, String longName, int defPower) {
 		this(u.components.get(0), lengthFactor, offset, shortName, longName, defPower);
 	}
-	
+
 		/** UC. No offset.
 		 *
 		 * @param u The old unit to base new unit on. This unit may only have one quantity.
@@ -147,7 +162,7 @@ public class U { // Compound Unit
 		public U(U u, double lengthFactor, String shortName, String longName, int defPower) {
 			this(u, lengthFactor, 0, shortName, longName, defPower);
 		}
-		
+
 			/** UC. No defPower.
 			 *
 			 * @param u The old unit to base new unit on. This unit may only have one quantity.
@@ -159,7 +174,7 @@ public class U { // Compound Unit
 			public U(U u, double lengthFactor, double offset, String shortName, String longName) {
 				this(u, lengthFactor, offset, shortName, longName, 1);
 			}
-			
+
 				/** UC. No offset or defPower.
 				 *
 				 * @param u The old unit to base new unit on. This unit may only have one quantity.
@@ -351,7 +366,7 @@ public class U { // Compound Unit
 		for (BU u : components) {
 			len *= u.getLength();
 		}
-		return len;
+		return len * lengthFactor;
 	}
 	
 	public double getOffset() {

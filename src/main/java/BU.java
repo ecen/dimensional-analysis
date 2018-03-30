@@ -16,7 +16,6 @@
 public class BU { // Base Unit
 	
 	private final double length;
-	
 	private final Quantity quantity;
 	private final int defPower; // Definition power. Ex: Litres is Distance^3 but does not itself have a power. Thus its defPower = 3.
 	private final double offset; // The absolute offset. Only used for absolute conversion. All units of same quantity needs to offset to the same point.
@@ -42,14 +41,18 @@ public class BU { // Base Unit
 		this(length, shortName, longName, quantity, 1);
 	}
 	
-	private BU(BU a, int power, int defPower) {
-		this(a.length, a.shortName, a.longName, new Quantity(a.quantity.getBase(), power), defPower);
+	private BU(BU bu, int power, int defPower) {
+		this(bu.length, bu.shortName, bu.longName, new Quantity(bu.quantity.getBase(), power), defPower);
 	}
 	
-	public BU(BU a, int power) {
-		this(a.length, a.shortName, a.longName, new Quantity(a.quantity.getBase(), power), a.defPower);
+	public BU(BU bu, int power) {
+		this(bu.length, bu.shortName, bu.longName, new Quantity(bu.quantity.getBase(), power), bu.defPower);
 	}
-	
+
+	/** Creates a BU using the first component of a U. Only predictable for units consisting of one base unit.
+	 *
+	 * @param u unit to build this base unit from
+	 */
 	public BU(U u) {
 		this(u.components.get(0), u.components.get(0).getPower(), u.components.get(0).defPower);
 	}
@@ -142,6 +145,10 @@ public class BU { // Base Unit
 	
 	public Base getQuantityBase() {
 		return quantity.getBase();
+	}
+
+	public Quantity getQuantity() {
+		return quantity;
 	}
 	
 	public String shortName(boolean inverted) {
