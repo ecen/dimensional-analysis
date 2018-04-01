@@ -111,7 +111,7 @@ public class U { // Compound Unit
 		U v = new U();
 		int power = bu.getPower();
 		BU newBu = new BU(bu.getLength() * lengthFactor, shortName, longName,
-				  new Quantity(bu.getQuantityBase(), power), power, offset);
+				  new Quantity(bu.getQuantityBase(), power), offset);
 		addComponent(newBu, v.components);
 
 		System.out.printf("Base: %s derived as %s: %s. Quantity: %s. From %s\n", v, v.getDerivedName(), v.components, newBu.getQuantity(), bu);
@@ -137,8 +137,8 @@ public class U { // Compound Unit
 		v.longCompoundName = longCompoundName;
 
 		for (BU bu : u.components) {
-			bu = new BU(bu, bu.getPower(), bu.getDefPower());
-			System.out.printf("Compound: %s, %s, power: %d, defPower: %d\n", shortCompoundName, bu, bu.getPower(), bu.getDefPower());
+			bu = new BU(bu, bu.getPower());
+			//System.out.printf("Compound: %s, %s, power: %d\n", shortCompoundName, bu, bu.getPower());
 			addComponent(bu, v.components);
 		}
 		System.out.printf("Compound: %s derived as %s.\n", v, v.getDerivedName());
