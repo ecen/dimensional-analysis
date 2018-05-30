@@ -90,22 +90,20 @@ public class UV implements Comparable<UV> { // Unit Vector
 				uv.unit = unit;
 				resultUnit = unit;
 				result = new UV(value * uv.convert(unit).value, resultUnit);
-			} else if (this.unit.isSameQuantity(uv.unit)) { // Units are the same quantity, just convert their lengths.
-				//resultUnit = unit.mul(uv.convert(unit).unit);
-				resultUnit = unit.mul(uv.unit).reduce();
-				//System.out.println("Mul values: " + value * unit.getLengthFactor() + ", " + uv.convert(unit).value);
-				result = new UV(value * unit.getLengthFactor() * uv.convert(unit).value * unit.getLengthFactor(), resultUnit);
-				//result = new UV(value * uv.value, resultUnit);
-			} else { // Units have different quantity
-				resultUnit = unit.mul(uv.unit); // Calculate naively (only correct if units have the same lengths)
-				// Convert result to the unit given by reducing the naive result. This is the correct unit to convert to.
-				result = new UV(value * uv.value, resultUnit).convert(resultUnit.reduce());
+			} else {
+				resultUnit = unit.mul(uv.unit).reduce(); // As a side-effect, resultUnit has been converted to composite units.
+				U resultMe = resultUnit.div(uv.unit).reduce(); // this.unit but expressed in same composites as resultUnit
+				U resultThem = resultUnit.div(unit).reduce(); // uv.unit but expressed in same composites as resultUnit
+				result = new UV(this.convert(resultMe).value * uv.convert(resultThem).value, resultUnit);
+				System.out.printf("Mul: %s * %s = %s. I am %s. They are %s. \n", this, uv, result, resultMe, resultThem);
+				if (unit.isSameQuantity(uv.unit)) {
+					result.convert(unit.pow(2));
+				}
 			}
 		} catch (UnitMismatchException e) {
 			System.err.format("[ERROR] %s and %s could not be multiplied and caused a UnitMismatchException. ", this, uv);
 			e.printStackTrace();
 		}
-		//System.out.println("Mul unit: " + result.unit());
 		return result;
 	}
 
@@ -122,7 +120,7 @@ public class UV implements Comparable<UV> { // Unit Vector
 	}
 	
 	public UV pow(double p) {
-		//System.out.println("Powering " + this + " with " + p);
+		System.out.println("Powering " + this + " with " + p);
 		U u = this.unit.pow(p);
 		U root = u.pow(1.0/p);
 		UV result = null;
@@ -131,7 +129,7 @@ public class UV implements Comparable<UV> { // Unit Vector
 		} catch (UnitMismatchException e){
 			System.err.format("The power of %s could not be calculated. This means that the root of the powered unit could not be calculated. \n", this);
 		}
-		//System.out.println("Powered to " + result);
+		System.out.println("Powered to " + result);
 		return result;
 	}
 	

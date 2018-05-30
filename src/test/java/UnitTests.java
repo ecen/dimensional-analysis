@@ -15,23 +15,6 @@ public class UnitTests {
 		// Custom unit based on multiple quantities converts correctly to original unit
 		U cu = new U(U.M.div(U.KG), 0.025, "cu", "compound unit");
 		Assert.assertEquals(new UV(0.025, U.M.div(U.KG)), new UV(1, cu).convert(U.M.div(U.KG)));
-		
-		
-	}
-
-	@Test
-	public void defPower() throws UnitMismatchException {
-		// Units defined with defPower != 1 converts correctly
-		U dms = new U(U.M.pow(2), 2, "DMS", "DoubleMeterSq");
-		Assert.assertEquals(new UV(1, dms), new UV(2, U.M.pow(2)));
-		Assert.assertNotEquals(new UV(1, dms), new UV(1, U.M.pow(2)));
-		Assert.assertNotEquals(new UV(1, dms), new UV(4, U.M.pow(2)));
-
-		// Visible names of defPower units are correct
-		//Assert.assertEquals("4.00 cc^2", new UV(2, U.CC).pow(2).toString());
-		//Assert.assertEquals("4.00 cc^2", new UV(2, U.CC).mul(new UV(0.2, U.DM)).toString());
-		Assert.assertEquals("4.00 cc", new UV(2, U.CC).add(new UV(2, U.CC)).toString());
-		Assert.assertEquals("4.00 cm^6", new UV(2, U.CC).pow(2).convert(U.CM.pow(6)).toString());
 	}
 	
 	@Test
@@ -45,6 +28,24 @@ public class UnitTests {
 		U carl = new U(U.M.div(U.KG), 0.025, "carl", "carl");
 		Assert.assertEquals(new UV(2, carl).mul(new UV(2, carl)), new UV(2, carl).mul(new UV(2, carl)).convert(U.M.mul(U.M).div(U.KG).div(U.KG)));
 		Assert.assertEquals(new UV(2, carl).mul(new UV(2, carl)).convert(U.M.mul(U.M).div(U.KG).div(U.KG)), new UV(2, carl).pow(2));
+	}
+
+	@Test
+	public void defPower() throws UnitMismatchException {
+		// Units defined with defPower != 1 converts correctly
+		U dms = new U(U.M.pow(2), 2, "DMS", "DoubleMeterSq");
+		Assert.assertEquals(new UV(1, dms), new UV(2, U.M.pow(2)));
+		Assert.assertNotEquals(new UV(1, dms), new UV(1, U.M.pow(2)));
+		Assert.assertNotEquals(new UV(1, dms), new UV(4, U.M.pow(2)));
+	}
+	
+	@Test
+	public void naming() throws UnitMismatchException {
+		// Visible names of defPower units are correct
+		Assert.assertEquals("4.00 cc^2", new UV(2, U.CC).pow(2).toString());
+		Assert.assertEquals("4.00 cc^2", new UV(2, U.CC).mul(new UV(0.2, U.DM)).toString());
+		Assert.assertEquals("4.00 cc", new UV(2, U.CC).add(new UV(2, U.CC)).toString());
+		Assert.assertEquals("4.00 cm^6", new UV(2, U.CC).pow(2).convert(U.CM.pow(6)).toString());
 	}
 
 }
