@@ -17,6 +17,7 @@ public class U { // Compound Unit
 
 	private String shortCompoundName = ""; // Short name of this compound unit, if any
 	private String longCompoundName = "";
+	private double compoundPower = 1;
 
 	//Static list containing all created units. Used for parsing, lookup etc.
 	//private static ArrayList<U> units = new ArrayList<U>();
@@ -98,15 +99,19 @@ public class U { // Compound Unit
 	}
 
 	public U(U u, double lengthFactor, String shortName, String longName){
-		this(unitFactory(u, lengthFactor, shortName, longName));
+		this(unitFactory(u, lengthFactor, shortName, longName, 1));
+	}
+	
+	private U(U u, double lengthFactor, String shortName, String longName, double compoundPower){
+		this(unitFactory(u, lengthFactor, shortName, longName, compoundPower));
 	}
 
-	private static U unitFactory(U u, double lengthFactor, String shortName, String longName){
+	private static U unitFactory(U u, double lengthFactor, String shortName, String longName, double compoundPower){
 		u = u.reduce();
-		if (u.components.size() <= 1 && u.components.get(0).getPower() <= 1) {
+		if (u.components.size() <= 1 && u.components.get(0).getPower() <= 1 && compoundPower <= 1) {
 			return baseUnitFactory(u.components.get(0), lengthFactor, 0, shortName, longName);
 		} else {
-			U v = compoundUnitFactory(u, lengthFactor, shortName, longName);
+			U v = compoundUnitFactory(u, lengthFactor, shortName, longName, compoundPower);
 			if (!v.shortCompoundName.equals("")) allUnits.add(v);
 			return v;
 		}
@@ -134,15 +139,16 @@ public class U { // Compound Unit
 	}
 
 	/** Creates a multiple-quantity unit. */
-	private static U compoundUnitFactory(U u, double lengthFactor, String shortCompoundName, String longCompoundName) {
+	private static U compoundUnitFactory(U u, double lengthFactor, String shortCompoundName, String longCompoundName, double compoundPower) {
 		U v = new U();
 
 		v.lengthFactor = lengthFactor;
 		v.shortCompoundName = shortCompoundName;
 		v.longCompoundName = longCompoundName;
+		v.compoundPower = compoundPower;
 
 		for (BU bu : u.components) {
-			bu = new BU(bu, bu.getPower());
+			bu = new BU(bu, bu.getPower()).pow(compoundPower);
 			//System.out.printf("Compound: %s, %s, power: %d\n", shortCompoundName, bu, bu.getPower());
 			addComponent(bu, v.components);
 		}
@@ -184,10 +190,11 @@ public class U { // Compound Unit
 	 * @return The resulting unit.
 	 */
 	public U pow(double p) {
-		U u = new U();
+		U u = new U(this, this.lengthFactor, this.shortCompoundName, this.longCompoundName, p);
+		/*U u = new U();
 		for (BU bu: components){
 			u.components.add(bu.pow(p));
-		}
+		}*/
 		return u;
 	}
 
@@ -197,11 +204,12 @@ public class U { // Compound Unit
 	 * @return The resulting inverted unit.
 	 */
 	public U inverse() {
-		U u = new U();
+		/*U u = new U();
 		for (BU b : components) {
 			U.addComponent(b.inverse(), u.components);
 		}
-		return u;
+		return u;*/
+		return pow(-1);
 	}
 
 	/**

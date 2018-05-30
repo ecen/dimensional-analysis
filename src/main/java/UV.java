@@ -101,7 +101,7 @@ public class UV implements Comparable<UV> { // Unit Vector
 				}
 			}
 		} catch (UnitMismatchException e) {
-			System.err.format("[ERROR] %s and %s could not be multiplied and caused a UnitMismatchException. ", this, uv);
+			System.err.format("[ERROR] %s and %s could not be multiplied and caused a UnitMismatchException.\n", this, uv);
 			e.printStackTrace();
 		}
 		return result;
