@@ -10,6 +10,8 @@ public class Main {
 		//U carl = new U(U.M, 1.93, "carl", "carl");
 		System.out.println(new UV(1, carl).convert(U.M.div(U.KG)));
 		System.out.println(new UV(1, U.M.div(U.KG)).convert(carl));
+		System.out.println(new UV(2, U.CC).pow(2));
+		System.out.println(new UV(2, U.CC).pow(2).unit().toCompound());
 		//System.out.println(new UV(1.9, U.M).convert(carl));
 	}
 }

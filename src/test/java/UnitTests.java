@@ -24,6 +24,10 @@ public class UnitTests {
 		Assert.assertEquals(new UV(1, dms), new UV(2, U.M.pow(2)));
 		Assert.assertNotEquals(new UV(1, dms), new UV(1, U.M.pow(2)));
 		Assert.assertNotEquals(new UV(1, dms), new UV(4, U.M.pow(2)));
+
+		// Visible names of defPower units are correct
+		Assert.assertEquals("4.00 cc^2", new UV(2, U.CC).pow(2).toString());
+		Assert.assertEquals("4.00 cm^6", new UV(2, U.CC).pow(2).convert(U.CM.pow(6)).toString());
 	}
 	
 	@Test

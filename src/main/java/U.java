@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 
 /**
@@ -11,6 +12,8 @@ import java.util.Iterator;
  * Those do however have limited functionality. This code should not be used to implement calendar systems.
  */
 public class U { // Compound Unit
+
+	private static ArrayList<U> allUnits = new ArrayList<U>(10);
 
 	private double lengthFactor = 1; // Not 1 for defined units based on compound units but with different length.
 	ArrayList<BU> components = new ArrayList<BU>(0);
@@ -71,6 +74,9 @@ public class U { // Compound Unit
 	public static final U N = new U(U.KG.mul(U.M).div(U.S.mul(U.S)));
 	public static final U CC = new U(CM.pow(3), 1, "cc", "cubic centimeter");
 
+	public static final U SC = new U(CM.pow(2), 1, "sc", "square centimeter");
+	public static final U SCM = new U(CM.pow(2), 1, "sqcm", "square centimeter");
+
 	/**
 	 * Empty constructor.
 	 */
@@ -103,7 +109,9 @@ public class U { // Compound Unit
 		if (u.components.size() <= 1 && u.components.get(0).getPower() <= 1) {
 			return baseUnitFactory(u.components.get(0), lengthFactor, 0, shortName, longName);
 		} else {
-			return compoundUnitFactory(u, lengthFactor, shortName, longName);
+			U v = compoundUnitFactory(u, lengthFactor, shortName, longName);
+			if (v.shortCompoundName != "") allUnits.add(v);
+			return v;
 		}
 	}
 
@@ -152,7 +160,7 @@ public class U { // Compound Unit
 	 * @param a the unit to multiply with.
 	 * @return The resulting (compound) unit.
 	 */
-	public U mul(U a) {
+	public U mul(U a) { // TODO Compound name dissapears here. Solve by implementing compound unit name recognition.
 		U u = new U();
 		U.addCompound(this, u);
 		U.addCompound(a, u);
@@ -393,6 +401,14 @@ public class U { // Compound Unit
 		return closestLengthUnit;
 	}
 
+	public static int getSizeMeasurement(U u){
+		int sum = 0;
+		for (BU bu : u.components) {
+			sum += Math.abs(bu.getPower());
+		}
+		return sum;
+	}
+
 	public String getDerivedName() {
 		// Sort components
 		ArrayList<BU> mults = new ArrayList<BU>(0);
@@ -440,11 +456,22 @@ public class U { // Compound Unit
 		return s;
 	}
 
+	public U toCompound(){
+		allUnits.sort(new Comparator<U>() {
+			@Override
+			public int compare(U o1, U o2) {
+				return getSizeMeasurement(o2) - getSizeMeasurement(o1);
+			}
+		});
+		System.out.println(allUnits);
+		return allUnits.get(0);
+	}
+
 	public String toString() {
 		if (shortCompoundName != "") {
-			return shortCompoundName;
+			return shortCompoundName + " (" + getSizeMeasurement(this) + ")";
 		}
-		return getDerivedName();
+		return getDerivedName() + " | " ;
 	}
 
 	public String debugString() {

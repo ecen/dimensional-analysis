@@ -63,6 +63,7 @@ public class UV implements Comparable<UV> { // Unit Vector
 	}
 
 	public UV pow(int p) {
+		System.out.println("Power unit: " + this.unit());
 		UV uv = new UV(0, this.unit());
 		if (p > 0) {
 			uv = this;
@@ -81,6 +82,7 @@ public class UV implements Comparable<UV> { // Unit Vector
 	public UV mul(UV uv) {
 		UV result = uv;
 		U resultUnit;
+
 		try {
 			if (unit.equals(U.NONE) && !uv.unit.equals(U.NONE)) { // One unit is NONE, pretend it's the right unit
 				unit = uv.unit;
@@ -102,6 +104,7 @@ public class UV implements Comparable<UV> { // Unit Vector
 			System.err.format("[ERROR] %s and %s could not be multiplied and caused a UnitMismatchException.", this, uv);
 			e.printStackTrace();
 		}
+		System.out.println("Mul unit: " + result.unit());
 		return result;
 	}
 
