@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * Compund Unit
@@ -117,7 +114,7 @@ public class U { // Compound Unit
 
 	private static U baseUnitFactory(BU bu, double lengthFactor, double offset, String shortName, String longName) {
 		U v = new U();
-		int power = bu.getPower();
+		double power = bu.getPower();
 		BU newBu = new BU(bu.getLength() * lengthFactor, shortName, longName,
 				  new Quantity(bu.getQuantityBase(), power), offset);
 		addComponent(newBu, v.components);
@@ -160,7 +157,7 @@ public class U { // Compound Unit
 	 * @param a the unit to multiply with.
 	 * @return The resulting (compound) unit.
 	 */
-	public U mul(U a) { // TODO Compound name dissapears here. Solve by implementing compound unit name recognition.
+	public U mul(U a) { // TODO Compound name disappears here. Solve by implementing compound unit name recognition.
 		U u = new U();
 		U.addCompound(this, u);
 		U.addCompound(a, u);
@@ -186,18 +183,10 @@ public class U { // Compound Unit
 	 * @param p The exponent. 0: result is NONE. 1: Result is itself. &gt;1: Power. &lt;0: Result is inverted and given power.
 	 * @return The resulting unit.
 	 */
-	public U pow(int p) {
+	public U pow(double p) {
 		U u = new U();
-		if (p > 0) {
-			u = this;
-			for (int i = 1; i < p; i++) {
-				u = u.mul(this);
-			}
-		} else if (p < 0) {
-			u = this.div(this.mul(this));
-			for (int i = -1; i > p; i--) {
-				u = u.div(this);
-			}
+		for (BU bu: components){
+			u.components.add(bu.pow(p));
 		}
 		return u;
 	}
@@ -345,6 +334,10 @@ public class U { // Compound Unit
 		}
 		return len * lengthFactor;
 	}
+	
+	double getLengthFactor(){
+		return lengthFactor;
+	}
 
 	public double getOffset() {
 		double offset = 0;
@@ -395,8 +388,12 @@ public class U { // Compound Unit
 		}
 		return closestLengthUnit;
 	}
-
-	public static int getSizeMeasurement(U u){
+	
+	/**
+	 * @param u
+	 * @return The number of base dimensions constituting this unit. Ex: size of (a^3 * b^2 * c^-1) = 3 + 2 + 1 = 6
+	 */
+	private static int getSizeMeasurement(U u){
 		int sum = 0;
 		for (BU bu : u.components) {
 			sum += Math.abs(bu.getPower());
@@ -464,9 +461,9 @@ public class U { // Compound Unit
 
 	public String toString() {
 		if (!shortCompoundName.equals("")) {
-			return shortCompoundName + " (" + getSizeMeasurement(this) + ")";
+			return shortCompoundName;// + " (" + getSizeMeasurement(this) + ")";
 		}
-		return getDerivedName() + " | " ;
+		return getDerivedName() + "" ;
 	}
 
 	public String debugString() {

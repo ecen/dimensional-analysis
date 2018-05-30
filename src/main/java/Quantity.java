@@ -8,9 +8,9 @@
 public class Quantity {
 	
 	private Base base;
-	private int power;
+	private double power;
 	
-	public Quantity(Base base, int power) {
+	public Quantity(Base base, double power) {
 		// Power == 0 or NONE both mean the same thing
 		if (power == 0 || base.equals(Base.NONE)) {
 			this.base = Base.NONE;
@@ -42,7 +42,7 @@ public class Quantity {
 		return base;
 	}
 
-	public int getPower() {
+	public double getPower() {
 		return power;
 	}
 

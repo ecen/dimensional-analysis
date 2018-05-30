@@ -36,7 +36,7 @@ public class BU { // Base Unit
 		this(length, shortName, longName, quantity, 0);
 	}
 	
-	public BU(BU bu, int power) {
+	public BU(BU bu, double power) {
 		this(bu.length, bu.shortName, bu.longName, new Quantity(bu.quantity.getBase(), power));
 	}
 
@@ -91,8 +91,8 @@ public class BU { // Base Unit
 	 *          			 If &gt;1: Power.
 	 *          			 If &lt;0: Result is inverted and given power.
 	 * @return the resulting unit. */
-	public BU pow(int p) {
-		int newPower = this.getPower() * p;
+	public BU pow(double p) {
+		double newPower = this.getPower() * p;
 		if (newPower == 0) newPower = 1;
 		return new BU(this, this.getPower() * p);
 	}
@@ -122,7 +122,7 @@ public class BU { // Base Unit
 		return Math.pow(length, getPower());
 	}
 	
-	public int getPower() {
+	public double getPower() {
 		return quantity.getPower();
 	}
 	
@@ -139,9 +139,9 @@ public class BU { // Base Unit
 	}
 	
 	public String shortName(boolean inverted) {
-		int p = quantity.getPower();// - (defPower - 0);
+		double p = quantity.getPower();// - (defPower - 0);
 		if (inverted) p = -p;
-		int displayPower = p;
+		double displayPower = p;
 		//System.out.println(shortName);
 		return getPowerShortName(shortName, displayPower);
 	}
@@ -151,7 +151,7 @@ public class BU { // Base Unit
 	}
 	
 	public String longName(boolean inverted) {
-		int p = quantity.getPower();// - (defPower - 0);
+		double p = quantity.getPower();// - (defPower - 0);
 		if (inverted) p = -p;
 		return getPowerLongName(longName, p);
 	}
@@ -160,7 +160,7 @@ public class BU { // Base Unit
 		return longName(false);
 	}
 	
-	private static String getPowerLongName(String name, int power) {
+	private static String getPowerLongName(String name, double power) {
 		if (power == 0) {
 			return String.format("%s", name);
 		} else if (power == 1) {
@@ -174,11 +174,13 @@ public class BU { // Base Unit
 		}
 	}
 	
-	private static String getPowerShortName(String name, int power) {
+	private static String getPowerShortName(String name, double power) {
 		if (power == 0) {
 			return String.format("%s", name);
 		} else if (power == 1) {
 			return String.format("%s", name);
+		} else if (power % 1 == 0){
+			return String.format("%s^%.0f", name, power);
 		} else {
 			return String.format("%s^%s", name, power);
 		}

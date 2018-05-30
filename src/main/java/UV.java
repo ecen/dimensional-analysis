@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Unit Vector
  * <p>
@@ -25,15 +27,28 @@ public class UV implements Comparable<UV> { // Unit Vector
 		this.value = uv.value;
 		this.unit = uv.unit;
 	}
-
+	
+	/**
+	 * @param to The Unit to convert to.
+	 * @return A UV with the same value as this one but expressed in a different unit.
+	 *
+	 * @throws UnitMismatchException If this unit can be converted to the target unit. (They share the same quantity.)
+	 */
 	public UV convert(U to) throws UnitMismatchException {
 		if (!unit.isSameQuantity(to)) {
 			throw new UnitMismatchException(String.format("%s can not be converted to %s because they are not the same quantity. The difference is %s.",
 					  unit, to, unit.dimDiff(to)));
 		}
+		//System.out.printf("Converting %s with l=%f to %s with l=%f.\n", this, unit.getLength(), new UV((this.value * unit.getLength()) / to.getLength(), to), to.getLength());
 		return new UV((this.value * unit.getLength()) / to.getLength(), to);
 	}
-
+	
+	/** Converts this unit accounting for offset. Use this for converting between scales, such as X Fahrenheit into Y Celsius.
+	 * @param to
+	 * @return
+	 *
+	 * @throws UnitMismatchException
+	 */
 	public UV convertAbsolute(U to) throws UnitMismatchException {
 		UV result = this.convert(to);
 		result = result.add(new UV(unit.getOffset(), unit)).sub(new UV(to.getOffset(), to));
@@ -62,49 +77,35 @@ public class UV implements Comparable<UV> { // Unit Vector
 		return sub(new UV(value, u));
 	}
 
-	public UV pow(int p) {
-		System.out.println("Power unit: " + this.unit());
-		UV uv = new UV(0, this.unit());
-		if (p > 0) {
-			uv = this;
-			for (int i = 1; i < p; i++) {
-				uv = uv.mul(this);
-			}
-		} else if (p < 0) {
-			uv = this.div(this.mul(this));
-			for (int i = -1; i > p; i--) {
-				uv = uv.div(this);
-			}
-		}
-		return uv;
-	}
-
 	public UV mul(UV uv) {
 		UV result = uv;
 		U resultUnit;
 
 		try {
-			if (unit.equals(U.NONE) && !uv.unit.equals(U.NONE)) { // One unit is NONE, pretend it's the right unit
+			if (unit.equals(U.NONE) && !uv.unit.equals(U.NONE)) { // This unit is NONE, result will have other unit.
 				unit = uv.unit;
 				resultUnit = uv.unit;
 				result = new UV(value * uv.convert(unit).value, resultUnit);
-			} else if (!unit.equals(U.NONE) && uv.unit.equals(U.NONE)) { // One unit is NONE, pretend it's the left unit
+			} else if (!unit.equals(U.NONE) && uv.unit.equals(U.NONE)) { // Other unit is NONE, result will have this unit.
 				uv.unit = unit;
 				resultUnit = unit;
 				result = new UV(value * uv.convert(unit).value, resultUnit);
-			} else if (this.unit.isSameQuantity(uv.unit)) { // Units are the same quantity, just convert their lengths
-				resultUnit = unit.mul(uv.convert(unit).unit);
-				result = new UV(value * uv.convert(unit).value, resultUnit);
+			} else if (this.unit.isSameQuantity(uv.unit)) { // Units are the same quantity, just convert their lengths.
+				//resultUnit = unit.mul(uv.convert(unit).unit);
+				resultUnit = unit.mul(uv.unit).reduce();
+				//System.out.println("Mul values: " + value * unit.getLengthFactor() + ", " + uv.convert(unit).value);
+				result = new UV(value * unit.getLengthFactor() * uv.convert(unit).value * unit.getLengthFactor(), resultUnit);
+				//result = new UV(value * uv.value, resultUnit);
 			} else { // Units have different quantity
 				resultUnit = unit.mul(uv.unit); // Calculate naively (only correct if units have the same lengths)
 				// Convert result to the unit given by reducing the naive result. This is the correct unit to convert to.
 				result = new UV(value * uv.value, resultUnit).convert(resultUnit.reduce());
 			}
 		} catch (UnitMismatchException e) {
-			System.err.format("[ERROR] %s and %s could not be multiplied and caused a UnitMismatchException.", this, uv);
+			System.err.format("[ERROR] %s and %s could not be multiplied and caused a UnitMismatchException. ", this, uv);
 			e.printStackTrace();
 		}
-		System.out.println("Mul unit: " + result.unit());
+		//System.out.println("Mul unit: " + result.unit());
 		return result;
 	}
 
@@ -119,7 +120,26 @@ public class UV implements Comparable<UV> { // Unit Vector
 	public UV div(double value, U u) {
 		return div(new UV(value, u));
 	}
-
+	
+	public UV pow(double p) {
+		//System.out.println("Powering " + this + " with " + p);
+		U u = this.unit.pow(p);
+		U root = u.pow(1.0/p);
+		UV result = null;
+		try {
+			result = new UV(Math.pow(this.convert(root).value, p), u);
+		} catch (UnitMismatchException e){
+			System.err.format("The power of %s could not be calculated. This means that the root of the powered unit could not be calculated. \n", this);
+		}
+		//System.out.println("Powered to " + result);
+		return result;
+	}
+	
+	/** Invert this unit but essentially retain its value (although the value is also inverted).
+	 * Ex: inverse(2 m^2) = 1/2 m^-2
+	 *
+	 * @return A UV with inverted unit and with newValue = 1 / oldValue.
+	 */
 	public UV inverse() {
 		return new UV(1.0 / value, unit.inverse());
 	}
@@ -210,7 +230,7 @@ public class UV implements Comparable<UV> { // Unit Vector
 			return false;
 		}
 		UV uv = (UV) obj;
-
+		
 		return compareTo(uv) == 0;
 	}
 
@@ -221,10 +241,11 @@ public class UV implements Comparable<UV> { // Unit Vector
 			uv = uv.convert(unit);
 		} catch (UnitMismatchException e) {
 			// CompareTo cannot cast exception. Have to be handled here.
-			System.err.format("[ERROR] %s and %s could not be compared because they are not the same quantity. ", unit(), uv.unit());
+			System.err.format("[ERROR] %s and %s could not be compared because they are not the same quantity.\n", unit(), uv.unit());
 			e.printStackTrace();
 			return 0;
 		}
+		//System.out.printf("Comparing %s and %s. Their values are %f and %f.\n", this, uv, value(), uv.value());
 		if (value() < uv.value() - maxError) return -1;
 		else if (value() > uv.value() + maxError) return 1;
 		else return 0;
