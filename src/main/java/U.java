@@ -110,7 +110,7 @@ public class U { // Compound Unit
 			return baseUnitFactory(u.components.get(0), lengthFactor, 0, shortName, longName);
 		} else {
 			U v = compoundUnitFactory(u, lengthFactor, shortName, longName);
-			if (v.shortCompoundName != "") allUnits.add(v);
+			if (!v.shortCompoundName.equals("")) allUnits.add(v);
 			return v;
 		}
 	}
@@ -266,10 +266,8 @@ public class U { // Compound Unit
 			added = true;
 		}
 
-		for (Iterator<BU> iterator = components.iterator(); iterator.hasNext(); ) {
-			BU c = iterator.next();
-			if (c.getPower() == 0) iterator.remove(); // Remove any NONE elements
-		}
+		// Remove any NONE elements
+		components.removeIf(c -> c.getPower() == 0);
 	}
 
 	/**
@@ -321,13 +319,11 @@ public class U { // Compound Unit
 	 */
 	public boolean isSameQuantity(U b) {
 		U diff = this.dimDiff(b);
-		if (diff.reduce().components.size() == 0) return true;
-		return false;
+		return diff.reduce().components.size() == 0;
 	}
 
 	private boolean hasComponent(BU u) {
-		if (components.contains(u)) return true;
-		return false;
+		return components.contains(u);
 	}
 
 	public boolean equals(Object obj) {
@@ -339,8 +335,7 @@ public class U { // Compound Unit
 		}
 		U u = (U) obj;
 
-		if (this.dimDiff(u).components.size() == 0) return true;
-		return false;
+		return this.dimDiff(u).components.size() == 0;
 	}
 
 	public double getLength() {
@@ -468,7 +463,7 @@ public class U { // Compound Unit
 	}
 
 	public String toString() {
-		if (shortCompoundName != "") {
+		if (!shortCompoundName.equals("")) {
 			return shortCompoundName + " (" + getSizeMeasurement(this) + ")";
 		}
 		return getDerivedName() + " | " ;
