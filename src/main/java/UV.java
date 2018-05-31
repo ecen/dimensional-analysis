@@ -32,14 +32,16 @@ public class UV implements Comparable<UV> { // Unit Vector
 	 * @param to The Unit to convert to.
 	 * @return A UV with the same value as this one but expressed in a different unit.
 	 *
-	 * @throws UnitMismatchException If this unit can be converted to the target unit. (They share the same quantity.)
+	 * @throws UnitMismatchException If this unit can't be converted to the target unit. (If they don't share the same quantity.)
 	 */
 	public UV convert(U to) throws UnitMismatchException {
 		if (!unit.isSameQuantity(to)) {
 			throw new UnitMismatchException(String.format("%s can not be converted to %s because they are not the same quantity. The difference is %s.",
 					  unit, to, unit.dimDiff(to)));
 		}
-		//System.out.printf("Converting %s with l=%f to %s with l=%f.\n", this, unit.getLength(), new UV((this.value * unit.getLength()) / to.getLength(), to), to.getLength());
+		double a = unit.getLength();
+		double b = to.getLength();
+		System.out.printf("Converting %s with l=%e to %s with l=%e.\n", this, a, new UV((this.value * a) / b, to), b);
 		return new UV((this.value * unit.getLength()) / to.getLength(), to);
 	}
 	
@@ -119,15 +121,19 @@ public class UV implements Comparable<UV> { // Unit Vector
 		return div(new UV(value, u));
 	}
 	
-	public UV pow(double p) {
-		System.out.println("Powering " + this + " with " + p);
+	public UV pow(double p) throws UnitMismatchException{
+		//System.out.println("Powering.");
+		System.out.println("Pow 1");
 		U u = this.unit.pow(p);
+		System.out.println("Pow 2");
 		U root = u.pow(1.0/p);
+		System.out.printf("Powering %s to %f. Unit will be %s and root is %s.\n", this, p, u, root);
 		UV result = null;
 		try {
 			result = new UV(Math.pow(this.convert(root).value, p), u);
 		} catch (UnitMismatchException e){
 			System.err.format("The power of %s could not be calculated. This means that the root of the powered unit could not be calculated. \n", this);
+			e.printStackTrace();
 		}
 		System.out.println("Powered to " + result);
 		return result;
@@ -236,17 +242,15 @@ public class UV implements Comparable<UV> { // Unit Vector
 	public int compareTo(UV uv) {
 		try {
 			// Make sure uv and this are the same quantity and convert so that values can be compared later.
-			uv = uv.convert(unit);
+			uv = uv.convert(unit());
 		} catch (UnitMismatchException e) {
 			// CompareTo cannot cast exception. Have to be handled here.
 			System.err.format("[ERROR] %s and %s could not be compared because they are not the same quantity.\n", unit(), uv.unit());
 			e.printStackTrace();
 			return 0;
 		}
-		//System.out.printf("Comparing %s and %s. Their values are %f and %f.\n", this, uv, value(), uv.value());
-		if (value() < uv.value() - maxError) return -1;
-		else if (value() > uv.value() + maxError) return 1;
-		else return 0;
+		System.out.printf("Comparing %s and %s. Their values are %f and %f.\n", this, uv, value(), uv.value());
+		return Double.compare(value(), uv.value());
 	}
 
 	/**

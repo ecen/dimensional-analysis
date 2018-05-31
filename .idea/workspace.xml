@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="03e942ba-025d-47aa-bae6-87870fe75c5f" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/U.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/U.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/UV.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/UV.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Main.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -39,26 +42,30 @@
       <file leaf-file-name="BU.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/BU.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="278">
-              <caret line="177" column="6" selection-start-line="177" selection-start-column="6" selection-end-line="185" selection-end-column="7" />
+            <state relative-caret-position="1938">
+              <caret line="116" column="13" selection-start-line="116" selection-start-column="13" selection-end-line="116" selection-end-column="13" />
+              <folding>
+                <element signature="e#3530#3531#0" expanded="true" />
+                <element signature="e#3583#3584#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="U.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="U.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/U.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="480" column="10" selection-start-line="480" selection-start-column="10" selection-end-line="480" selection-end-column="10" />
+            <state relative-caret-position="388">
+              <caret line="353" column="79" selection-start-line="353" selection-start-column="79" selection-end-line="353" selection-end-column="79" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UV.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="UV.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/UV.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3294">
-              <caret line="38" selection-start-line="38" selection-end-line="38" />
+            <state relative-caret-position="466">
+              <caret line="252" column="49" lean-forward="true" selection-start-line="252" selection-start-column="49" selection-end-line="252" selection-end-column="49" />
             </state>
           </provider>
         </entry>
@@ -84,8 +91,8 @@
       <file leaf-file-name="UnitTests.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/UnitTests.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="29" selection-start-line="29" selection-end-line="29" />
+            <state relative-caret-position="425">
+              <caret line="29" column="130" selection-start-line="29" selection-start-column="130" selection-end-line="29" selection-end-column="130" />
             </state>
           </provider>
         </entry>
@@ -93,8 +100,8 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="16" column="51" selection-start-line="16" selection-start-column="51" selection-end-line="16" selection-end-column="51" />
+            <state relative-caret-position="306">
+              <caret line="18" selection-start-line="18" selection-end-line="18" />
             </state>
           </provider>
         </entry>
@@ -136,19 +143,20 @@
         <option value="$PROJECT_DIR$/src/main/java/UnitMismatchException.java" />
         <option value="$PROJECT_DIR$/src/main/java/StatUV.java" />
         <option value="$PROJECT_DIR$/src/main/java/Base.java" />
-        <option value="$PROJECT_DIR$/src/test/java/Main.java" />
         <option value="$PROJECT_DIR$/src/main/java/Quantity.java" />
         <option value="$PROJECT_DIR$/src/main/java/BU.java" />
         <option value="$PROJECT_DIR$/src/test/java/UnitTests.java" />
-        <option value="$PROJECT_DIR$/src/main/java/UV.java" />
+        <option value="$PROJECT_DIR$/src/test/java/Main.java" />
         <option value="$PROJECT_DIR$/src/main/java/U.java" />
+        <option value="$PROJECT_DIR$/src/main/java/UV.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-7" />
-    <option name="width" value="974" />
-    <option name="height" value="1047" />
+    <option name="x" value="-1928" />
+    <option name="y" value="-8" />
+    <option name="width" value="975" />
+    <option name="height" value="488" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -156,7 +164,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="AndroidView" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -199,8 +208,7 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="AndroidView" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -224,7 +232,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.UnitTests">
+  <component name="RunManager" selected="JUnit.UnitTests.arithmetic">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
     </configuration>
@@ -328,9 +336,9 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.UnitTests" />
-        <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.UnitTests.arithmetic" />
+        <item itemvalue="Application.Main" />
+        <item itemvalue="JUnit.UnitTests" />
       </list>
     </recent_temporary>
   </component>
@@ -356,39 +364,39 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="UnitTests - 2018.05.31 at 00h 54m 35s.xml">
-      <configuration name="UnitTests" configurationId="JUnit" />
+    <history-entry file="UnitTests_arithmetic - 2018.05.31 at 23h 52m 55s.xml">
+      <configuration name="UnitTests.arithmetic" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="UnitTests - 2018.05.31 at 00h 58m 12s.xml">
-      <configuration name="UnitTests" configurationId="JUnit" />
+    <history-entry file="UnitTests_arithmetic - 2018.05.31 at 23h 53m 08s.xml">
+      <configuration name="UnitTests.arithmetic" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="UnitTests - 2018.05.31 at 01h 00m 26s.xml">
-      <configuration name="UnitTests" configurationId="JUnit" />
+    <history-entry file="UnitTests_arithmetic - 2018.05.31 at 23h 57m 16s.xml">
+      <configuration name="UnitTests.arithmetic" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="UnitTests - 2018.05.31 at 01h 00m 52s.xml">
-      <configuration name="UnitTests" configurationId="JUnit" />
+    <history-entry file="UnitTests_arithmetic - 2018.06.01 at 00h 02m 38s.xml">
+      <configuration name="UnitTests.arithmetic" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="UnitTests - 2018.05.31 at 01h 02m 34s.xml">
-      <configuration name="UnitTests" configurationId="JUnit" />
+    <history-entry file="UnitTests_arithmetic - 2018.06.01 at 00h 07m 45s.xml">
+      <configuration name="UnitTests.arithmetic" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="UnitTests - 2018.05.31 at 01h 06m 38s.xml">
-      <configuration name="UnitTests" configurationId="JUnit" />
+    <history-entry file="UnitTests_arithmetic - 2018.06.01 at 00h 09m 45s.xml">
+      <configuration name="UnitTests.arithmetic" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="UnitTests - 2018.05.31 at 01h 07m 04s.xml">
-      <configuration name="UnitTests" configurationId="JUnit" />
+    <history-entry file="UnitTests_arithmetic - 2018.06.01 at 00h 10m 27s.xml">
+      <configuration name="UnitTests.arithmetic" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="UnitTests - 2018.05.31 at 01h 08m 48s.xml">
-      <configuration name="UnitTests" configurationId="JUnit" />
+    <history-entry file="UnitTests_arithmetic - 2018.06.01 at 00h 11m 29s.xml">
+      <configuration name="UnitTests.arithmetic" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="UnitTests - 2018.05.31 at 07h 31m 04s.xml">
-      <configuration name="UnitTests" configurationId="JUnit" />
+    <history-entry file="UnitTests_arithmetic - 2018.06.01 at 00h 12m 14s.xml">
+      <configuration name="UnitTests.arithmetic" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="UnitTests - 2018.05.31 at 07h 35m 38s.xml">
-      <configuration name="UnitTests" configurationId="JUnit" />
+    <history-entry file="UnitTests_arithmetic - 2018.06.01 at 00h 25m 20s.xml">
+      <configuration name="UnitTests.arithmetic" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-1928" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
@@ -400,11 +408,11 @@
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50208336" side_tool="true" weight="0.32946146" />
       <window_info anchor="right" id="Maven Projects" order="3" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32946146" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49791667" visible="true" weight="0.32946146" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49791667" weight="0.3315734" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13697916" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.05" />
       <window_info id="Learn" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -758,13 +766,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="51" selection-start-line="16" selection-start-column="51" selection-end-line="16" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Quantity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
@@ -786,31 +787,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/UnitTests.java">
+    <entry file="file://$PROJECT_DIR$/src/test/java/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="29" selection-start-line="29" selection-end-line="29" />
+        <state relative-caret-position="306">
+          <caret line="18" selection-start-line="18" selection-end-line="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/BU.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="278">
-          <caret line="177" column="6" selection-start-line="177" selection-start-column="6" selection-end-line="185" selection-end-column="7" />
+        <state relative-caret-position="1938">
+          <caret line="116" column="13" selection-start-line="116" selection-start-column="13" selection-end-line="116" selection-end-column="13" />
+          <folding>
+            <element signature="e#3530#3531#0" expanded="true" />
+            <element signature="e#3583#3584#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/UV.java">
+    <entry file="file://$PROJECT_DIR$/src/test/java/UnitTests.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3294">
-          <caret line="38" selection-start-line="38" selection-end-line="38" />
+        <state relative-caret-position="425">
+          <caret line="29" column="130" selection-start-line="29" selection-start-column="130" selection-end-line="29" selection-end-column="130" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/U.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="480" column="10" selection-start-line="480" selection-start-column="10" selection-end-line="480" selection-end-column="10" />
+        <state relative-caret-position="388">
+          <caret line="353" column="79" selection-start-line="353" selection-start-column="79" selection-end-line="353" selection-end-column="79" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/UV.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="466">
+          <caret line="252" column="49" lean-forward="true" selection-start-line="252" selection-start-column="49" selection-end-line="252" selection-end-column="49" />
         </state>
       </provider>
     </entry>

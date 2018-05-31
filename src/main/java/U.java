@@ -125,7 +125,7 @@ public class U { // Compound Unit
 				  new Quantity(bu.getQuantityBase(), power), offset);
 		addComponent(newBu, v.components);
 
-		System.out.printf("Base: %s derived as %s: %s. Quantity: %s. From %s\n", v, v.getDerivedName(), v.components, newBu.getQuantity(), bu);
+		//System.out.printf("Base: %s derived as %s: %s. Quantity: %s. From %s\n", v, v.getDerivedName(), v.components, newBu.getQuantity(), bu);
 		return v;
 	}
 
@@ -146,14 +146,15 @@ public class U { // Compound Unit
 		v.lengthFactor = lengthFactor;
 		v.shortCompoundName = shortCompoundName;
 		v.longCompoundName = longCompoundName;
-		v.compoundPower = compoundPower;
+		v.compoundPower = u.compoundPower * compoundPower;
+		//System.out.printf("Set compound power to %f from %f times %f.\n", v.compoundPower, u.compoundPower, compoundPower);
 
 		for (BU bu : u.components) {
 			bu = new BU(bu, bu.getPower()).pow(compoundPower);
 			//System.out.printf("Compound: %s, %s, power: %d\n", shortCompoundName, bu, bu.getPower());
 			addComponent(bu, v.components);
 		}
-		System.out.printf("Compound: %s derived as %s.\n", v, v.getDerivedName());
+		//System.out.printf("Compound: %s to the power of %f derived as %s.\n", v.shortCompoundName, v.compoundPower, v.getDerivedName());
 
 		return v;
 	}
@@ -192,6 +193,7 @@ public class U { // Compound Unit
 	 */
 	public U pow(double p) {
 		U u = new U(this, this.lengthFactor, this.shortCompoundName, this.longCompoundName, p);
+		//System.out.printf("Unit: Power %s to %s. My power is %f. P is %f.\n", this, u, this.compoundPower, p);
 		/*U u = new U();
 		for (BU bu: components){
 			u.components.add(bu.pow(p));
@@ -231,6 +233,9 @@ public class U { // Compound Unit
 				qs[bu.getQuantityBase().ordinal()] = 0;
 			}
 		}
+		result.shortCompoundName = this.shortCompoundName;
+		result.longCompoundName = this.longCompoundName;
+		result.compoundPower = this.compoundPower;
 		return result;
 	}
 
@@ -317,6 +322,7 @@ public class U { // Compound Unit
 	 */
 	public boolean isSameQuantity(U b) {
 		U diff = this.dimDiff(b);
+		//System.out.printf("Dim diff: A has %s, B has %s.\n", this.components, b.components);
 		return diff.reduce().components.size() == 0;
 	}
 
@@ -338,14 +344,15 @@ public class U { // Compound Unit
 
 	public double getLength() {
 		double len = 1;
+		String s = "[";
+		s += String.format(" %f ", len);
 		for (BU u : components) {
 			len *= u.getLength();
+			s += String.format("(%s, %f)", u, u.getLength());
+			s += String.format(" %f ", len);
 		}
+		System.out.println(s + "] " + lengthFactor + " = " + (len * lengthFactor));
 		return len * lengthFactor;
-	}
-	
-	double getLengthFactor(){
-		return lengthFactor;
 	}
 
 	public double getOffset() {
@@ -469,18 +476,20 @@ public class U { // Compound Unit
 	}
 
 	public String toString() {
+		String s = "";
 		if (!shortCompoundName.equals("")) {
 			if (compoundPower == 0) {
-				return String.format("%s", shortCompoundName);
+				s = String.format("%s", shortCompoundName);
 			} else if (compoundPower == 1) {
-				return String.format("%s", shortCompoundName);
+				s = String.format("%s", shortCompoundName);
 			} else if (compoundPower % 1 == 0){
-				return String.format("%s^%.0f", shortCompoundName, compoundPower);
+				s = String.format("%s^%.0f", shortCompoundName, compoundPower);
 			} else {
-				return String.format("%s^%s", shortCompoundName, compoundPower);
+				s = String.format("%s^%s", shortCompoundName, compoundPower);
 			}
 		}
-		return getDerivedName() + "" ;
+		return String.format("%s (%s)", s, getDerivedName());
+		//return String.format("%s", s);
 	}
 
 	public String debugString() {
