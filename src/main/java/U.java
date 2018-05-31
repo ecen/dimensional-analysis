@@ -470,7 +470,15 @@ public class U { // Compound Unit
 
 	public String toString() {
 		if (!shortCompoundName.equals("")) {
-			return shortCompoundName;// + " (" + getSizeMeasurement(this) + ")";
+			if (compoundPower == 0) {
+				return String.format("%s", shortCompoundName);
+			} else if (compoundPower == 1) {
+				return String.format("%s", shortCompoundName);
+			} else if (compoundPower % 1 == 0){
+				return String.format("%s^%.0f", shortCompoundName, compoundPower);
+			} else {
+				return String.format("%s^%s", shortCompoundName, compoundPower);
+			}
 		}
 		return getDerivedName() + "" ;
 	}
