@@ -90,6 +90,7 @@ public class U { // Compound Unit
 		this.shortCompoundName = u.shortCompoundName;
 		this.longCompoundName = u.longCompoundName;
 		this.lengthFactor = u.lengthFactor;
+		this.compoundPower = u.compoundPower;
 
 		this.components.addAll(u.components);
 	}
@@ -108,7 +109,7 @@ public class U { // Compound Unit
 
 	private static U unitFactory(U u, double lengthFactor, String shortName, String longName, double compoundPower){
 		u = u.reduce();
-		if (u.components.size() <= 1 && u.components.get(0).getPower() <= 1 && compoundPower <= 1) {
+		if (u.components.size() <= 1 && u.components.get(0).getPower() <= 1 && compoundPower == 1) {
 			return baseUnitFactory(u.components.get(0), lengthFactor, 0, shortName, longName);
 		} else {
 			U v = compoundUnitFactory(u, lengthFactor, shortName, longName, compoundPower);
