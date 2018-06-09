@@ -127,7 +127,8 @@ public class UV implements Comparable<UV> { // Unit Vector
 		U u = this.unit.pow(p);
 		System.out.println("Pow 2");
 		U root = u.pow(1.0/p);
-		System.out.printf("Powering %s to %f. Unit will be %s and root is %s.\n", this, p, u, root);
+		System.out.printf("Powering %s with length %e to %f. Unit will be %s with length %e and root is %s.\n", this, unit().getLength(), p, u, u.getLength(), root);
+		//System.out.printf("%s should have length %e\n", u, this.mul(this).unit().getLength());
 		UV result = null;
 		try {
 			result = new UV(Math.pow(this.convert(root).value, p), u);

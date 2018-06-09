@@ -12,12 +12,12 @@ public class U { // Compound Unit
 
 	private static ArrayList<U> allUnits = new ArrayList<U>(10);
 
-	private double lengthFactor = 1; // Not 1 for defined units based on compound units but with different length.
+	private double compoundLength = 1; // Not 1 for defined units based on compound units but with different length.
+	private double compoundPower = 1; // Not 1 for defined units based on compound units but with different power.
 	ArrayList<BU> components = new ArrayList<BU>(0);
 
 	private String shortCompoundName = ""; // Short name of this compound unit, if any
 	private String longCompoundName = "";
-	private double compoundPower = 1;
 
 	//Static list containing all created units. Used for parsing, lookup etc.
 	//private static ArrayList<U> units = new ArrayList<U>();
@@ -89,7 +89,7 @@ public class U { // Compound Unit
 	private U(U u) {
 		this.shortCompoundName = u.shortCompoundName;
 		this.longCompoundName = u.longCompoundName;
-		this.lengthFactor = u.lengthFactor;
+		this.compoundLength = u.compoundLength;
 		this.compoundPower = u.compoundPower;
 
 		this.components.addAll(u.components);
@@ -99,12 +99,12 @@ public class U { // Compound Unit
 		this(baseUnitFactory(new BU(length, shortName, longName, quantity)));
 	}
 
-	public U(U u, double lengthFactor, String shortName, String longName){
-		this(unitFactory(u, lengthFactor, shortName, longName, 1));
+	public U(U u, double compoundLength, String shortName, String longName){
+		this(unitFactory(u, compoundLength, shortName, longName, 1));
 	}
 	
-	private U(U u, double lengthFactor, String shortName, String longName, double compoundPower){
-		this(unitFactory(u, lengthFactor, shortName, longName, compoundPower));
+	private U(U u, double compoundLength, String shortName, String longName, double compoundPower){
+		this(unitFactory(u, compoundLength, shortName, longName, compoundPower));
 	}
 
 	private static U unitFactory(U u, double lengthFactor, String shortName, String longName, double compoundPower){
@@ -113,7 +113,8 @@ public class U { // Compound Unit
 			return baseUnitFactory(u.components.get(0), lengthFactor, 0, shortName, longName);
 		} else {
 			U v = compoundUnitFactory(u, lengthFactor, shortName, longName, compoundPower);
-			if (!v.shortCompoundName.equals("")) allUnits.add(v);
+			// If unit has a name and not already added, add it to the list of all created units. For unit recognition.
+			if (!v.shortCompoundName.equals("") && !allUnits.contains(v)) allUnits.add(v);
 			return v;
 		}
 	}
@@ -140,10 +141,10 @@ public class U { // Compound Unit
 	}
 
 	/** Creates a multiple-quantity unit. */
-	private static U compoundUnitFactory(U u, double lengthFactor, String shortCompoundName, String longCompoundName, double compoundPower) {
+	private static U compoundUnitFactory(U u, double compoundLength, String shortCompoundName, String longCompoundName, double compoundPower) {
 		U v = new U();
 
-		v.lengthFactor = lengthFactor;
+		v.compoundLength = Math.pow(compoundLength, compoundPower);
 		v.shortCompoundName = shortCompoundName;
 		v.longCompoundName = longCompoundName;
 		v.compoundPower = u.compoundPower * compoundPower;
@@ -192,7 +193,7 @@ public class U { // Compound Unit
 	 * @return The resulting unit.
 	 */
 	public U pow(double p) {
-		U u = new U(this, this.lengthFactor, this.shortCompoundName, this.longCompoundName, p);
+		U u = new U(this, this.compoundLength, this.shortCompoundName, this.longCompoundName, p);
 		//System.out.printf("Unit: Power %s to %s. My power is %f. P is %f.\n", this, u, this.compoundPower, p);
 		/*U u = new U();
 		for (BU bu: components){
@@ -351,8 +352,8 @@ public class U { // Compound Unit
 			s += String.format("(%s, %f)", u, u.getLength());
 			s += String.format(" %f ", len);
 		}
-		System.out.println(s + "] " + lengthFactor + " = " + (len * lengthFactor));
-		return len * lengthFactor;
+		System.out.println(s + "] " + compoundLength + " = " + (len * compoundLength));
+		return len * compoundLength;
 	}
 
 	public double getOffset() {
@@ -488,6 +489,7 @@ public class U { // Compound Unit
 				s = String.format("%s^%s", shortCompoundName, compoundPower);
 			}
 		}
+		if (s.equals("")) return String.format("(%s)", getDerivedName());
 		return String.format("%s (%s)", s, getDerivedName());
 		//return String.format("%s", s);
 	}
