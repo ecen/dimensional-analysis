@@ -1,5 +1,7 @@
 /** Base Unit
  *
+ * A unit with exactly 1 quantity.
+ *
  * Most importantly defined by quantity and length.
  * Length is what relates this unit to other units of the same quantity.
  *
@@ -23,6 +25,7 @@ public class BU { // Base Unit
 	private final String shortName;
 	private final String longName;
 	
+	/** Create an entirely new BU.*/
 	public BU(double length, String shortName, String longName, Quantity quantity, double offset) {
 		this.length = length;
 		this.quantity = quantity;
@@ -32,12 +35,19 @@ public class BU { // Base Unit
 		this.longName = longName;
 	}
 	
+	/** Create an entirely new BU with no offset.*/
 	public BU(double length, String shortName, String longName, Quantity quantity) {
 		this(length, shortName, longName, quantity, 0);
 	}
 	
+	/** Create a BU with the same QuantityBase and name but another power. */
 	public BU(BU bu, double power) {
 		this(bu.length, bu.shortName, bu.longName, new Quantity(bu.quantity.getBase(), power));
+	}
+	
+	/** Create a BU with the same Quantity but another length and name. */
+	public BU(BU bu, double length, String shortName, String longName) {
+		this(length, shortName, longName, bu.getQuantity());
 	}
 
 	/** Creates a BU using the first component of a U. Only predictable for units consisting of one base unit.

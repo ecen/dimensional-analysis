@@ -250,8 +250,9 @@ public class UV implements Comparable<UV> { // Unit Vector
 			e.printStackTrace();
 			return 0;
 		}
-		System.out.printf("Comparing %s and %s. Their values are %f and %f.\n", this, uv, value(), uv.value());
-		return Double.compare(value(), uv.value());
+		System.out.printf("Comparing %s and %s. Values %.20f and %.20f. Lengths %e and %e.\n", this, uv, value(), uv.value(), unit().getLength(), uv.unit().getLength());
+		System.out.println("CompareTo returning " + U.compareDouble(value(), uv.value()));
+		return U.compareDouble(value(), uv.value());
 	}
 
 	/**

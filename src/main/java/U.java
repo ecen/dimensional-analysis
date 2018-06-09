@@ -10,6 +10,7 @@ import java.util.*;
  */
 public class U { // Compound Unit
 
+	public static double epsilon = 0.000000000000001;
 	private static ArrayList<U> allUnits = new ArrayList<U>(10);
 
 	private double compoundLength = 1; // Not 1 for defined units based on compound units but with different length.
@@ -109,7 +110,7 @@ public class U { // Compound Unit
 
 	private static U unitFactory(U u, double lengthFactor, String shortName, String longName, double compoundPower){
 		u = u.reduce();
-		if (u.components.size() <= 1 && u.components.get(0).getPower() <= 1 && compoundPower == 1) {
+		if (u.components.size() <= 1 && compoundPower == 1) { //&& u.components.get(0).getPower() <= 1
 			return baseUnitFactory(u.components.get(0), lengthFactor, 0, shortName, longName);
 		} else {
 			U v = compoundUnitFactory(u, lengthFactor, shortName, longName, compoundPower);
@@ -121,10 +122,13 @@ public class U { // Compound Unit
 
 	private static U baseUnitFactory(BU bu, double lengthFactor, double offset, String shortName, String longName) {
 		U v = new U();
-		double power = bu.getPower();
-		BU newBu = new BU(bu.getLength() * lengthFactor, shortName, longName,
-				  new Quantity(bu.getQuantityBase(), power), offset);
+		// Create BU with same power as old one, but with another length and new name
+		BU newBu = new BU(Math.pow(bu.getLength() * lengthFactor, 1.0/bu.getPower()), shortName, longName, bu.getQuantity(), offset);
+		
+		// Create U from BU
 		addComponent(newBu, v.components);
+		v.shortCompoundName = shortName;
+		v.longCompoundName = longName;
 
 		//System.out.printf("Base: %s derived as %s: %s. Quantity: %s. From %s\n", v, v.getDerivedName(), v.components, newBu.getQuantity(), bu);
 		return v;
@@ -139,8 +143,16 @@ public class U { // Compound Unit
 	private static U baseUnitFactory(double length, String shortName, String longName, Quantity quantity) {
 		return baseUnitFactory(new BU(length, shortName, longName, quantity));
 	}
-
-	/** Creates a multiple-quantity unit. */
+	
+	/** Creates a multiple-quantity unit based on an existing one.
+	 *
+	 * @param u
+	 * @param compoundLength The length the new unit has compared to the old one.
+	 * @param shortCompoundName
+	 * @param longCompoundName
+	 * @param compoundPower The power the new unit has compared to the old one.
+	 * @return
+	 */
 	private static U compoundUnitFactory(U u, double compoundLength, String shortCompoundName, String longCompoundName, double compoundPower) {
 		U v = new U();
 
@@ -340,7 +352,13 @@ public class U { // Compound Unit
 		}
 		U u = (U) obj;
 
-		return this.dimDiff(u).components.size() == 0;
+		return this.dimDiff(u).components.size() == 0 && U.compareDouble(this.getLength(), u.getLength()) == 0;
+	}
+	
+	public static int compareDouble(double d1, double d2){
+		if (d1 + epsilon > d2 && d1 - epsilon > d2) return 1;
+		if (d1 + epsilon < d2 && d1 - epsilon < d2) return -1;
+		return 0;
 	}
 
 	public double getLength() {
@@ -488,10 +506,11 @@ public class U { // Compound Unit
 			} else {
 				s = String.format("%s^%s", shortCompoundName, compoundPower);
 			}
+		} else {
+			s = String.format("(%s)", getDerivedName());
 		}
-		if (s.equals("")) return String.format("(%s)", getDerivedName());
-		return String.format("%s (%s)", s, getDerivedName());
-		//return String.format("%s", s);
+		//return String.format("%s (%s)", s, getDerivedName());
+		return String.format("%s", s);
 	}
 
 	public String debugString() {
@@ -502,5 +521,7 @@ public class U { // Compound Unit
 		s += "}";
 		return s;
 	}
+	
+	
 
 }
