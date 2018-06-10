@@ -18,26 +18,36 @@ public class BU { // Base Unit
 	private final double length;
 	private final Quantity quantity;
 
+	private final double defPower; // Definition power. Ex: Litres is Distance^3 but does not itself have a power. Thus its defPower = 3.
 	private final double offset; // The absolute offset. Only used for absolute conversion. All units of same quantity needs to offset to the same point.
 	
 	private final String shortName;
 	private final String longName;
 	
-	public BU(double length, String shortName, String longName, Quantity quantity, double offset) {
+	public BU(double length, String shortName, String longName, Quantity quantity, double defPower, double offset) {
 		this.length = length;
 		this.quantity = quantity;
+		this.defPower = defPower;
 		this.offset = offset;
 		
 		this.shortName = shortName;
 		this.longName = longName;
 	}
 	
-	public BU(double length, String shortName, String longName, Quantity quantity) {
-		this(length, shortName, longName, quantity, 0);
+	public BU(double length, String shortName, String longName, Quantity quantity, double defPower) {
+		this(length, shortName, longName, quantity, defPower, 0);
 	}
 	
-	public BU(BU bu, int power) {
-		this(bu.length, bu.shortName, bu.longName, new Quantity(bu.quantity.getBase(), power));
+	public BU(double length, String shortName, String longName, Quantity quantity) {
+		this(length, shortName, longName, quantity, 1);
+	}
+	
+	public BU(BU bu, double power, double defPower) {
+		this(bu.length, bu.shortName, bu.longName, new Quantity(bu.quantity.getBase(), power), defPower);
+	}
+	
+	public BU(BU bu, double power) {
+		this(bu.length, bu.shortName, bu.longName, new Quantity(bu.quantity.getBase(), power), bu.defPower);
 	}
 
 	/** Creates a BU using the first component of a U. Only predictable for units consisting of one base unit.
@@ -45,7 +55,7 @@ public class BU { // Base Unit
 	 * @param u unit to build this base unit from
 	 */
 	public BU(U u) {
-		this(u.components.get(0), u.components.get(0).getPower());
+		this(u.components.get(0), u.components.get(0).getPower(), u.components.get(0).defPower);
 	}
 
 	public boolean equals(Object obj) {
@@ -91,15 +101,15 @@ public class BU { // Base Unit
 	 *          			 If &gt;1: Power.
 	 *          			 If &lt;0: Result is inverted and given power.
 	 * @return the resulting unit. */
-	public BU pow(int p) {
-		int newPower = this.getPower() * p;
+	public BU pow(double p) {
+		double newPower = this.getPower() * p;
 		if (newPower == 0) newPower = 1;
 		return new BU(this, this.getPower() * p);
 	}
 	
 	public BU mul(BU bu) throws UnitMismatchException{
 		if (this.isSameQuantityLength(bu)) {
-			BU result = new BU(this, this.quantity.getPower() + bu.quantity.getPower());
+			BU result = new BU(this, this.quantity.getPower() + bu.quantity.getPower(), this.defPower); //TODO Not sure if defPower is correct
 			return result;
 		} else {
 			throw new UnitMismatchException(String.format("Base unit multiplication error: %s * %s.", this.longName(), bu.longName()));
@@ -108,22 +118,26 @@ public class BU { // Base Unit
 	
 	public BU div(BU bu) throws UnitMismatchException{
 		if (this.isSameQuantityLength(bu)) {
-			return new BU(this, this.quantity.getPower() - bu.quantity.getPower());
+			return new BU(this, this.quantity.getPower() - bu.quantity.getPower(), this.defPower); //TODO Not sure if defPower is correct
 		} else {
 			throw new UnitMismatchException(String.format("Base unit division error: %s / %s.", this.longName(), bu.longName()));
 		}
 	}
 	
 	public BU inverse() {
-		return new BU(this, -this.quantity.getPower());
+		return new BU(this, -this.quantity.getPower(), this.defPower);
 	}
 	
 	public double getLength() {
-		return Math.pow(length, getPower());
+		return Math.pow(length, getPower() / getDefPower());
 	}
 	
-	public int getPower() {
+	public double getPower() {
 		return quantity.getPower();
+	}
+	
+	public double getDefPower() {
+		return defPower;
 	}
 	
 	public double getOffset() {
@@ -139,9 +153,10 @@ public class BU { // Base Unit
 	}
 	
 	public String shortName(boolean inverted) {
-		int p = quantity.getPower();// - (defPower - 0);
+		double p = quantity.getPower();// - (defPower - 0);
 		if (inverted) p = -p;
-		int displayPower = p;
+		double displayPower = 0;
+		if (defPower != 0) displayPower = p/defPower;
 		//System.out.println(shortName);
 		return getPowerShortName(shortName, displayPower);
 	}
@@ -151,16 +166,16 @@ public class BU { // Base Unit
 	}
 	
 	public String longName(boolean inverted) {
-		int p = quantity.getPower();// - (defPower - 0);
+		double p = quantity.getPower();// - (defPower - 0);
 		if (inverted) p = -p;
-		return getPowerLongName(longName, p);
+		return getPowerLongName(longName, p/defPower);
 	}
 	
 	public String longName() {
 		return longName(false);
 	}
 	
-	private static String getPowerLongName(String name, int power) {
+	private static String getPowerLongName(String name, double power) {
 		if (power == 0) {
 			return String.format("%s", name);
 		} else if (power == 1) {
@@ -174,11 +189,13 @@ public class BU { // Base Unit
 		}
 	}
 	
-	private static String getPowerShortName(String name, int power) {
+	private static String getPowerShortName(String name, double power) {
 		if (power == 0) {
 			return String.format("%s", name);
 		} else if (power == 1) {
 			return String.format("%s", name);
+		} else if (power % 1 == 0){
+			return String.format("%s^%.0f", name, power);
 		} else {
 			return String.format("%s^%s", name, power);
 		}
