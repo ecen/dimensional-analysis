@@ -9,11 +9,11 @@ public class UnitTests {
 		Assert.assertEquals(U.M.pow(2), U.M.mul(U.M));
 		
 		U dms = new U(U.M.pow(2), 2, "DMS", "DoubleMeterSq");
-		Assert.assertEquals(U.M.pow(2).getLength() * 2, dms.getLength(), U.epsilon);
+		Assert.assertEquals(U.M.pow(2).getLength() * 2, dms.getLength(), Util.epsilon);
 		
 		U ddms = new U(U.DM.pow(2), 2, "DDMS", "DoubleDeciMeterSq");
-		Assert.assertEquals(U.DM.pow(2).getLength() * 2, ddms.getLength(), U.epsilon);
-		Assert.assertEquals( Math.pow(0.1, 2) * 2, ddms.getLength(), U.epsilon);
+		Assert.assertEquals(U.DM.pow(2).getLength() * 2, ddms.getLength(), Util.epsilon);
+		Assert.assertEquals( Math.pow(0.1, 2) * 2, ddms.getLength(), Util.epsilon);
 	}
 	
 	@Test
@@ -61,6 +61,11 @@ public class UnitTests {
 		Assert.assertEquals("4.00 cc^2", new UV(2, U.CC).mul(new UV(2, U.CC)).toString());
 		Assert.assertEquals("4.00 cc", new UV(2, U.CC).add(new UV(2, U.CC)).toString());
 		Assert.assertEquals("4.00 cm^6", new UV(2, U.CC).pow(2).convert(U.CM.pow(6)).toString());
+		
+		U carl = new U(U.M.div(U.KG), 0.025, "carl", "carl");
+		Assert.assertEquals("3.00 carl", new UV(3, carl).toString());
+		Assert.assertEquals("9.00 carl^2", new UV(3, carl).pow(2).toString());
+		Assert.assertEquals("0.0056 m^2/kg^2", new UV(3, carl).pow(2).convert(U.M.pow(2).div(U.KG.pow(2))).toString());
 	}
 
 }

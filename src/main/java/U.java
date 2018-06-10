@@ -9,8 +9,7 @@ import java.util.*;
  * Those do however have limited functionality. This code should not be used to implement calendar systems.
  */
 public class U { // Compound Unit
-
-	public static double epsilon = 0.000000000000001;
+	
 	private static ArrayList<U> allUnits = new ArrayList<U>(10);
 
 	private double compoundLength = 1; // Not 1 for defined units based on compound units but with different length.
@@ -123,7 +122,7 @@ public class U { // Compound Unit
 	private static U baseUnitFactory(BU bu, double lengthFactor, double offset, String shortName, String longName) {
 		U v = new U();
 		// Create BU with same power as old one, but with another length and new name
-		BU newBu = new BU(Math.pow(bu.getLength() * lengthFactor, 1.0/bu.getPower()), shortName, longName, bu.getQuantity(), offset);
+		BU newBu = new BU(bu.getLength() * lengthFactor, shortName, longName, bu.getQuantity(), bu.getPower(), offset);
 		
 		// Create U from BU
 		addComponent(newBu, v.components);
@@ -352,13 +351,7 @@ public class U { // Compound Unit
 		}
 		U u = (U) obj;
 
-		return this.dimDiff(u).components.size() == 0 && U.compareDouble(this.getLength(), u.getLength()) == 0;
-	}
-	
-	public static int compareDouble(double d1, double d2){
-		if (d1 + epsilon > d2 && d1 - epsilon > d2) return 1;
-		if (d1 + epsilon < d2 && d1 - epsilon < d2) return -1;
-		return 0;
+		return this.dimDiff(u).components.size() == 0 && Util.compareDouble(this.getLength(), u.getLength()) == 0;
 	}
 
 	public double getLength() {
@@ -507,7 +500,7 @@ public class U { // Compound Unit
 				s = String.format("%s^%s", shortCompoundName, compoundPower);
 			}
 		} else {
-			s = String.format("(%s)", getDerivedName());
+			s = String.format("%s", getDerivedName());
 		}
 		//return String.format("%s (%s)", s, getDerivedName());
 		return String.format("%s", s);
