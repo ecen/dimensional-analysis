@@ -363,7 +363,7 @@ public class U { // Compound Unit
 			s += String.format("(%s, %f)", u, u.getLength());
 			s += String.format(" %f ", len);
 		}
-		System.out.println(s + "] " + compoundLength + " = " + (len * compoundLength));
+		//System.out.println(s + "] " + compoundLength + " = " + (len * compoundLength));
 		return len * compoundLength;
 	}
 
@@ -483,7 +483,7 @@ public class U { // Compound Unit
 				return getSizeMeasurement(o2) - getSizeMeasurement(o1);
 			}
 		});
-		System.out.println(allUnits);
+		//System.out.println(allUnits);
 		return allUnits.get(0);
 	}
 

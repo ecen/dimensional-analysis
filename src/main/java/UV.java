@@ -41,7 +41,7 @@ public class UV implements Comparable<UV> { // Unit Vector
 		}
 		double a = unit.getLength();
 		double b = to.getLength();
-		System.out.printf("Converting %s with l=%e to %s with l=%e.\n", this, a, new UV((this.value * a) / b, to), b);
+		//System.out.printf("Converting %s with l=%e to %s with l=%e.\n", this, a, new UV((this.value * a) / b, to), b);
 		return new UV((this.value * unit.getLength()) / to.getLength(), to);
 	}
 	
@@ -97,7 +97,7 @@ public class UV implements Comparable<UV> { // Unit Vector
 				U resultMe = resultUnit.div(uv.unit).reduce(); // this.unit but expressed in same composites as resultUnit
 				U resultThem = resultUnit.div(unit).reduce(); // uv.unit but expressed in same composites as resultUnit
 				result = new UV(this.convert(resultMe).value * uv.convert(resultThem).value, resultUnit);
-				System.out.printf("Mul: %s * %s = %s. I am %s. They are %s. \n", this, uv, result, resultMe, resultThem);
+				//System.out.printf("Mul: %s * %s = %s. I am %s. They are %s. \n", this, uv, result, resultMe, resultThem);
 				if (unit.isSameQuantity(uv.unit)) {
 					result.convert(unit.pow(2));
 				}
@@ -123,11 +123,9 @@ public class UV implements Comparable<UV> { // Unit Vector
 	
 	public UV pow(double p) throws UnitMismatchException{
 		//System.out.println("Powering.");
-		System.out.println("Pow 1");
 		U u = this.unit.pow(p);
-		System.out.println("Pow 2");
 		U root = u.pow(1.0/p);
-		System.out.printf("Powering %s with length %e to %f. Unit will be %s with length %e and root is %s.\n", this, unit().getLength(), p, u, u.getLength(), root);
+		//System.out.printf("Powering %s with length %e to %f. Unit will be %s with length %e and root is %s.\n", this, unit().getLength(), p, u, u.getLength(), root);
 		//System.out.printf("%s should have length %e\n", u, this.mul(this).unit().getLength());
 		UV result = null;
 		try {
@@ -136,7 +134,6 @@ public class UV implements Comparable<UV> { // Unit Vector
 			System.err.format("The power of %s could not be calculated. This means that the root of the powered unit could not be calculated. \n", this);
 			e.printStackTrace();
 		}
-		System.out.println("Powered to " + result);
 		return result;
 	}
 	
@@ -250,8 +247,8 @@ public class UV implements Comparable<UV> { // Unit Vector
 			e.printStackTrace();
 			return 0;
 		}
-		System.out.printf("Comparing %s and %s. Values %.20f and %.20f. Lengths %e and %e.\n", this, uv, value(), uv.value(), unit().getLength(), uv.unit().getLength());
-		System.out.println("CompareTo returning " + Util.compareDouble(value(), uv.value()));
+		//System.out.printf("Comparing %s and %s. Values %.20f and %.20f. Lengths %e and %e.\n", this, uv, value(), uv.value(), unit().getLength(), uv.unit().getLength());
+		//System.out.println("CompareTo returning " + Util.compareDouble(value(), uv.value()));
 		return Util.compareDouble(value(), uv.value());
 	}
 
