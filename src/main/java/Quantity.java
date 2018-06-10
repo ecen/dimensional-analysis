@@ -46,4 +46,9 @@ public class Quantity {
 		return power;
 	}
 
+	@Override
+	public String toString(){
+		return base + " ^ " + power;
+	}
+
 }

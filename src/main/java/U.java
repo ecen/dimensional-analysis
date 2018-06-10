@@ -2,17 +2,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-/** Compund Unit
- * 
+/**
+ * Compund Unit
+ * <p>
  * Class and methods primarily for defining, calculating and converting between units of basic and compounded quantities.
- * 
+ * <p>
  * Some additional functionality exists for doing absolute conversion between scales, as well as units such as months and years.
- * Those do however have limited functionality. This code should not be used to implement calendar systems. 
+ * Those do however have limited functionality. This code should not be used to implement calendar systems.
  */
 public class U { // Compound Unit
 
+	private double lengthFactor = 1; // Not 1 for defined units based on compound units but with different length.
 	ArrayList<BU> components = new ArrayList<BU>(0);
-	
+
+	private String shortCompoundName = ""; // Short name of this compound unit, if any
+	private String longCompoundName = "";
+
 	//Static list containing all created units. Used for parsing, lookup etc.
 	//private static ArrayList<U> units = new ArrayList<U>();
 
@@ -29,7 +34,7 @@ public class U { // Compound Unit
 	public static final U MILE = new U(YARD, 1760, "mi", "mile");
 	public static final U LIGHTYEAR = new U(M, 9460730472580800.0, "lightyear", "lightyear");
 
-	public static final U L = new U(DM, 1, "L", "liter", 3);
+	public static final U L = new U(DM.pow(3), 1, "L", "liter");
 	public static final U ML = new U(L, 0.001, "ml", "milliliter");
 	public static final U TEASPOON = new U(ML, 4.92892159375, "tspn", "teaspoon");
 	public static final U TABLESPOON = new U(TEASPOON, 3, "tbsp", "tablespoon");
@@ -55,124 +60,95 @@ public class U { // Compound Unit
 	public static final U WEEK = new U(DAY, 7, "week", "week");
 	public static final U YEAR = new U(DAY, 365.25, "year", "year");
 	public static final U MONTH = new U(YEAR, 1.0 / 12, "month", "month");
-	
-	public static final U RADIAN = new U(1, "rad", "radian", new Quantity(Base.ROTATION));
-	public static final U DEGREE = new U(RADIAN, 0.0174533,"deg", "degree");
-	
-	public static final U KELVIN = new U(1, "K", "kelvin", new Quantity(Base.TEMPERATURE));
-	public static final U CELSIUS = new U(KELVIN, 1, 273.15, "°C", "celsius");
-	public static final U FAHRENHEIT = new U(CELSIUS, 5.0 / 9.0, 459.67, "°F", "fahrenheit");
-	
-	public static final U N = new U(U.KG.mul(U.M).div(U.S.mul(U.S)));
-	public static final U CC = new U(CM, 1, "cc", "cubic centimeter", 3);
 
+	public static final U RADIAN = new U(1, "rad", "radian", new Quantity(Base.ROTATION));
+	public static final U DEGREE = new U(RADIAN, 0.0174533, "deg", "degree");
+
+	public static final U KELVIN = new U(1, "K", "kelvin", new Quantity(Base.TEMPERATURE));
+	//public static final U CELSIUS = new U(KELVIN, 1, 273.15, "°C", "celsius"); // TODO Enable offset
+	//public static final U FAHRENHEIT = new U(CELSIUS, 5.0 / 9.0, 459.67, "°F", "fahrenheit");
+
+	public static final U N = new U(U.KG.mul(U.M).div(U.S.mul(U.S)));
+	public static final U CC = new U(CM.pow(3), 1, "cc", "cubic centimeter");
+
+	/**
+	 * Empty constructor.
+	 */
 	private U() {
 	}
 
-	U(U u) {
-		for (BU c : u.components) {
-			this.components.add(c);
-		}
-	}
-	
-	/** Source Base Unit Constructor
-	 * 
-	 * @param bu The base unit to base new unit on.
-	 * @param lengthFactor The number of old units that goes in one new unit. 
-	 * @param offset The absolute offset. Only used for absolute conversion. All units of same quantity needs to offset to the same point.
-	 * @param shortName 
-	 * @param longName
-	 * @param defPower The power of the new unit compared to the old unit. Ex: L = DM^3 so to define L we need defPower = 3. 
+	/**
+	 * Compound unit copy constructor.
+	 *
+	 * @param u the compound unit which to copy
 	 */
-	private U(BU bu, double lengthFactor, double offset, String shortName, String longName, int defPower) {
-		int power = bu.getPower() * defPower;
-		BU newBu = new BU(bu.pow(defPower).getLength() * lengthFactor, shortName, longName,
-				 new Quantity(bu.getQuantityBase(), power), power, offset);
-		addComponent(newBu, components);
+	private U(U u) {
+		this.shortCompoundName = u.shortCompoundName;
+		this.longCompoundName = u.longCompoundName;
+		this.lengthFactor = u.lengthFactor;
+
+		this.components.addAll(u.components);
 	}
-	
-		/** Simple Base Unit Constructor
-		 *
-		 * @param bu base unit for this unit
-		 */
-		public U(BU bu) {
-			//Replace here to handle special case for NONE
-			this(bu, 1, 0, bu.shortName(), bu.longName(), bu.getDefPower());
-		}
-		
-			/** Simple BUC. No Base Unit or offset.
-			 *
-			 * @param length length of this unit
-			 * @param shortName abbreviation of this unit
-			 * @param longName full name of this unit
-			 * @param quantity the quantity this unit represents
-			 * @param defPower the power of quantity this unit has. Ex: CC would have 3, because it is volume cubed.
-			 */
-			public U(double length, String shortName, String longName, Quantity quantity, int defPower) {
-				this(new BU(length, shortName, longName, quantity, defPower));
-			}
-			
-				/** Simple BUC. No Base Unit, defPower or offset.
-				 *
-				 * @param length length of this unit
-				 * @param shortName abbreviation of this unit
-				 * @param longName full name of this unit
-				 * @param quantity the quantity this unit represents
-				 */
-				 public U(double length, String shortName, String longName, Quantity quantity) {
-					this(length, shortName, longName, quantity, 1);
-				}
-	
-	/** Base Unit Constructor, from existing U.
-	 * 
-	 * @param u The old unit to base new unit on. This unit may only have one quantity.
-	 * @param lengthFactor The number of old units that goes in one new unit. 
-	 * @param offset The absolute offset. Only used for absolute conversion. All units of same quantity needs to offset to the same point.
-	 * @param shortName abbreviation of this unit
-	 * @param longName full name of this unit
-	 * @param defPower The power of the new unit compared to the old unit. Ex: L = DM^3 so to define L we need defPower = 3. 
-	 */
-	public U(U u, double lengthFactor, double offset, String shortName, String longName, int defPower) {
-		this(u.components.get(0), lengthFactor, offset, shortName, longName, defPower);
+
+	public U (double length, String shortName, String longName, Quantity quantity){
+		this(baseUnitFactory(new BU(length, shortName, longName, quantity)));
 	}
-	
-		/** UC. No offset.
-		 *
-		 * @param u The old unit to base new unit on. This unit may only have one quantity.
-		 * @param lengthFactor The number of old units that goes in one new unit.
-		 * @param shortName abbreviation of this unit
-		 * @param longName full name of this unit
-		 * @param defPower The power of the new unit compared to the old unit. Ex: L = DM^3 so to define L we need defPower = 3.
-		 */
-		public U(U u, double lengthFactor, String shortName, String longName, int defPower) {
-			this(u, lengthFactor, 0, shortName, longName, defPower);
+
+	public U(U u, double lengthFactor, String shortName, String longName){
+		this(unitFactory(u, lengthFactor, shortName, longName));
+	}
+
+	private static U unitFactory(U u, double lengthFactor, String shortName, String longName){
+		u = u.reduce();
+		if (u.components.size() <= 1 && u.components.get(0).getPower() <= 1) {
+			return baseUnitFactory(u.components.get(0), lengthFactor, 0, shortName, longName);
+		} else {
+			return compoundUnitFactory(u, lengthFactor, shortName, longName);
 		}
-		
-			/** UC. No defPower.
-			 *
-			 * @param u The old unit to base new unit on. This unit may only have one quantity.
-			 * @param lengthFactor The number of old units that goes in one new unit.
-			 * @param offset The absolute offset. Only used for absolute conversion. All units of same quantity needs to offset to the same point.
-			 * @param shortName abbreviation of this unit
-			 * @param longName full name of this unit
-			 */
-			public U(U u, double lengthFactor, double offset, String shortName, String longName) {
-				this(u, lengthFactor, offset, shortName, longName, 1);
-			}
-			
-				/** UC. No offset or defPower.
-				 *
-				 * @param u The old unit to base new unit on. This unit may only have one quantity.
-				 * @param lengthFactor The number of old units that goes in one new unit.
-				 * @param shortName abbreviation of this unit
-				 * @param longName full name of this unit
-				 */
-				public U(U u, double lengthFactor, String shortName, String longName) {
-					this(u, lengthFactor, 0, shortName, longName, 1);
-				}
-				
-	/** Multiply this unit with another unit.
-	 * 
+	}
+
+	private static U baseUnitFactory(BU bu, double lengthFactor, double offset, String shortName, String longName) {
+		U v = new U();
+		int power = bu.getPower();
+		BU newBu = new BU(bu.getLength() * lengthFactor, shortName, longName,
+				  new Quantity(bu.getQuantityBase(), power), offset);
+		addComponent(newBu, v.components);
+
+		System.out.printf("Base: %s derived as %s: %s. Quantity: %s. From %s\n", v, v.getDerivedName(), v.components, newBu.getQuantity(), bu);
+		return v;
+	}
+
+	private static U baseUnitFactory(BU bu) {
+		//Replace here to handle special case for NONE
+		return baseUnitFactory(bu, 1, 0, bu.shortName(), bu.longName());
+	}
+
+	/** Creates a single-quantity unit. */
+	private static U baseUnitFactory(double length, String shortName, String longName, Quantity quantity) {
+		return baseUnitFactory(new BU(length, shortName, longName, quantity));
+	}
+
+	/** Creates a multiple-quantity unit. */
+	private static U compoundUnitFactory(U u, double lengthFactor, String shortCompoundName, String longCompoundName) {
+		U v = new U();
+
+		v.lengthFactor = lengthFactor;
+		v.shortCompoundName = shortCompoundName;
+		v.longCompoundName = longCompoundName;
+
+		for (BU bu : u.components) {
+			bu = new BU(bu, bu.getPower());
+			//System.out.printf("Compound: %s, %s, power: %d\n", shortCompoundName, bu, bu.getPower());
+			addComponent(bu, v.components);
+		}
+		System.out.printf("Compound: %s derived as %s.\n", v, v.getDerivedName());
+
+		return v;
+	}
+
+	/**
+	 * Multiply this unit with another unit.
+	 *
 	 * @param a the unit to multiply with.
 	 * @return The resulting (compound) unit.
 	 */
@@ -183,8 +159,9 @@ public class U { // Compound Unit
 		return u;
 	}
 
-	/** Divide this unit with another unit.
-	 * 
+	/**
+	 * Divide this unit with another unit.
+	 *
 	 * @param a the unit to divide with.
 	 * @return The resulting (compound) unit.
 	 */
@@ -195,8 +172,9 @@ public class U { // Compound Unit
 		return u;
 	}
 
-	/** Perform repeated multiplication of this unit with itself.
-	 * 
+	/**
+	 * Perform repeated multiplication of this unit with itself.
+	 *
 	 * @param p The exponent. 0: result is NONE. 1: Result is itself. &gt;1: Power. &lt;0: Result is inverted and given power.
 	 * @return The resulting unit.
 	 */
@@ -216,8 +194,9 @@ public class U { // Compound Unit
 		return u;
 	}
 
-	/** Equivalent to pow(-1)
-	 * 
+	/**
+	 * Equivalent to pow(-1)
+	 *
 	 * @return The resulting inverted unit.
 	 */
 	public U inverse() {
@@ -227,9 +206,10 @@ public class U { // Compound Unit
 		}
 		return u;
 	}
-	
-	/** Checks the unit for multiple instances of the same quantity and combines them.
-	 * 
+
+	/**
+	 * Checks the unit for multiple instances of the same quantity and combines them.
+	 *
 	 * @return the reduced compound unit.
 	 */
 	public U reduce() {
@@ -237,7 +217,7 @@ public class U { // Compound Unit
 		for (BU bu : components) {
 			qs[bu.getQuantityBase().ordinal()] += bu.getPower();
 		}
-		
+
 		U result = new U();
 		for (BU bu : components) {
 			if (qs[bu.getQuantityBase().ordinal()] != 0) {
@@ -248,9 +228,10 @@ public class U { // Compound Unit
 		return result;
 	}
 
-	/** Adds a Basic Unit component to this compound unit. This is basically multiplying with one BU.
-	 * 
-	 * @param a the basic unit to multiply into compound unit.
+	/**
+	 * Adds a Basic Unit component to this compound unit. This is basically multiplying with one BU.
+	 *
+	 * @param a          the basic unit to multiply into compound unit.
 	 * @param components the component list for the compound unit.
 	 */
 	private static void addComponent(BU a, ArrayList<BU> components) {
@@ -277,16 +258,17 @@ public class U { // Compound Unit
 			added = true;
 		}
 
-		for (Iterator<BU> iterator = components.iterator(); iterator.hasNext();) {
+		for (Iterator<BU> iterator = components.iterator(); iterator.hasNext(); ) {
 			BU c = iterator.next();
 			if (c.getPower() == 0) iterator.remove(); // Remove any NONE elements
 		}
 	}
 
-	/** Adds an entire compound unit to this compound unit. This is basically multiplying.
-	 * 
+	/**
+	 * Adds an entire compound unit to this compound unit. This is basically multiplying.
+	 *
 	 * @param from the unit to pull basic units from
-	 * @param to the unit to add basic units to
+	 * @param to   the unit to add basic units to
 	 */
 	private static void addCompound(U from, U to) {
 		for (BU c : from.components) {
@@ -294,15 +276,17 @@ public class U { // Compound Unit
 		}
 	}
 
-	/** @param b the target unit
+	/**
+	 * @param b the target unit
 	 * @return the unit that you should multiply with to get the other unit.
 	 **/
 	public U dimDiff(U b) {
 		return U.dimDiff(this, b);
 	}
 
-	/** Dimension Difference
-	 * 
+	/**
+	 * Dimension Difference
+	 *
 	 * @param a source unit
 	 * @param b target unit
 	 * @return The unit that you should multiply a with to get b.
@@ -321,8 +305,9 @@ public class U { // Compound Unit
 		return diff;
 	}
 
-	/** Checks whether or not this unit and unit b has the same total quantity. (Basically if they could be added.)
-	 * 
+	/**
+	 * Checks whether or not this unit and unit b has the same total quantity. (Basically if they could be added.)
+	 *
 	 * @param b the unit to check against
 	 * @return True iff the units have the same quantity.
 	 */
@@ -338,8 +323,12 @@ public class U { // Compound Unit
 	}
 
 	public boolean equals(Object obj) {
-		if (obj == null) { return false; }
-		if (!U.class.isAssignableFrom(obj.getClass())) { return false; }
+		if (obj == null) {
+			return false;
+		}
+		if (!U.class.isAssignableFrom(obj.getClass())) {
+			return false;
+		}
 		U u = (U) obj;
 
 		if (this.dimDiff(u).components.size() == 0) return true;
@@ -351,9 +340,9 @@ public class U { // Compound Unit
 		for (BU u : components) {
 			len *= u.getLength();
 		}
-		return len;
+		return len * lengthFactor;
 	}
-	
+
 	public double getOffset() {
 		double offset = 0;
 		for (BU u : components) {
@@ -361,22 +350,23 @@ public class U { // Compound Unit
 		}
 		return offset;
 	}
-	
-	/** Calculates and returns the most suitable unit to display a given UV in.
+
+	/**
+	 * Calculates and returns the most suitable unit to display a given UV in.
 	 *
-	 * @param uv the source unit vector you want the best unit for
+	 * @param uv     the source unit vector you want the best unit for
 	 * @param target the target value of the numeric part.
 	 * @return the most suitable unit to display UV in.
 	 */
 	public static U getBestUnit(UV uv, double target) {
 		ArrayList<U> si = new ArrayList<U>(Arrays.asList(U.MM, U.CM, U.M,
-				U.MM.pow(2), U.CM.pow(2), U.DM.pow(2), U.M.pow(2),
-				U.ML, U.CC, U.L, U.M.pow(3),
-				U.MS, U.S, U.MIN, U.H, U.DAY, U.WEEK, U.MONTH, U.YEAR,
-				U.G, U.KG, U.TON,
-				
-				U.L.div(U.S), U.L.div(U.H), U.L.div(U.DAY),
-				U.ML.div(U.S), U.ML.div(U.H), U.ML.div(U.DAY)));
+				  U.MM.pow(2), U.CM.pow(2), U.DM.pow(2), U.M.pow(2),
+				  U.ML, U.CC, U.L, U.M.pow(3),
+				  U.MS, U.S, U.MIN, U.H, U.DAY, U.WEEK, U.MONTH, U.YEAR,
+				  U.G, U.KG, U.TON,
+
+				  U.L.div(U.S), U.L.div(U.H), U.L.div(U.DAY),
+				  U.ML.div(U.S), U.ML.div(U.H), U.ML.div(U.DAY)));
 		U reduced = uv.unit().reduce();
 		ArrayList<U> correctQuantity = new ArrayList<U>(0); //List with all units of correct quantity
 		for (U u : si) {
@@ -390,10 +380,10 @@ public class U { // Compound Unit
 				//The logarithm gives a smaller value the closer to 1 we are.
 				//We can divide the value in the abs to increase the number we want to get close to. 
 				//Dividing by 10 makes it so we're finding the closest to 10
-				double distance = Math.abs(Math.log(Math.abs(uv.convert(u).value()/target)));
+				double distance = Math.abs(Math.log(Math.abs(uv.convert(u).value() / target)));
 				if (distance < closestLength) {
 					closestLengthUnit = u;
-					closestLength = distance; 
+					closestLength = distance;
 				}
 			}
 		} catch (UnitMismatchException e) {
@@ -403,7 +393,7 @@ public class U { // Compound Unit
 		return closestLengthUnit;
 	}
 
-	public String toString() {
+	public String getDerivedName() {
 		// Sort components
 		ArrayList<BU> mults = new ArrayList<BU>(0);
 		ArrayList<BU> divs = new ArrayList<BU>(0);
@@ -411,7 +401,7 @@ public class U { // Compound Unit
 			if (bu.getPower() > 0) mults.add(bu);
 			if (bu.getPower() < 0) divs.add(bu);
 		}
-		
+
 		// Write numerators
 		String s = "";
 		if (mults.size() > 1) s = s.concat("(");
@@ -449,7 +439,14 @@ public class U { // Compound Unit
 
 		return s;
 	}
-	
+
+	public String toString() {
+		if (shortCompoundName != "") {
+			return shortCompoundName;
+		}
+		return getDerivedName();
+	}
+
 	public String debugString() {
 		String s = "{";
 		for (BU bu : components) {

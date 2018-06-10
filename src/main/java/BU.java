@@ -16,42 +16,36 @@
 public class BU { // Base Unit
 	
 	private final double length;
-	
 	private final Quantity quantity;
-	private final int defPower; // Definition power. Ex: Litres is Distance^3 but does not itself have a power. Thus its defPower = 3.
+
 	private final double offset; // The absolute offset. Only used for absolute conversion. All units of same quantity needs to offset to the same point.
 	
 	private final String shortName;
 	private final String longName;
 	
-	public BU(double length, String shortName, String longName, Quantity quantity, int defPower, double offset) {
+	public BU(double length, String shortName, String longName, Quantity quantity, double offset) {
 		this.length = length;
 		this.quantity = quantity;
-		this.defPower = defPower;
 		this.offset = offset;
 		
 		this.shortName = shortName;
 		this.longName = longName;
 	}
 	
-	public BU(double length, String shortName, String longName, Quantity quantity, int defPower) {
-		this(length, shortName, longName, quantity, defPower, 0);
-	}
-	
 	public BU(double length, String shortName, String longName, Quantity quantity) {
-		this(length, shortName, longName, quantity, 1);
+		this(length, shortName, longName, quantity, 0);
 	}
 	
-	private BU(BU a, int power, int defPower) {
-		this(a.length, a.shortName, a.longName, new Quantity(a.quantity.getBase(), power), defPower);
+	public BU(BU bu, int power) {
+		this(bu.length, bu.shortName, bu.longName, new Quantity(bu.quantity.getBase(), power));
 	}
-	
-	public BU(BU a, int power) {
-		this(a.length, a.shortName, a.longName, new Quantity(a.quantity.getBase(), power), a.defPower);
-	}
-	
+
+	/** Creates a BU using the first component of a U. Only predictable for units consisting of one base unit.
+	 *
+	 * @param u unit to build this base unit from
+	 */
 	public BU(U u) {
-		this(u.components.get(0), u.components.get(0).getPower(), u.components.get(0).defPower);
+		this(u.components.get(0), u.components.get(0).getPower());
 	}
 
 	public boolean equals(Object obj) {
@@ -105,7 +99,7 @@ public class BU { // Base Unit
 	
 	public BU mul(BU bu) throws UnitMismatchException{
 		if (this.isSameQuantityLength(bu)) {
-			BU result = new BU(this, this.quantity.getPower() + bu.quantity.getPower(), this.defPower); //TODO Not sure if defPower is correct
+			BU result = new BU(this, this.quantity.getPower() + bu.quantity.getPower());
 			return result;
 		} else {
 			throw new UnitMismatchException(String.format("Base unit multiplication error: %s * %s.", this.longName(), bu.longName()));
@@ -114,26 +108,22 @@ public class BU { // Base Unit
 	
 	public BU div(BU bu) throws UnitMismatchException{
 		if (this.isSameQuantityLength(bu)) {
-			return new BU(this, this.quantity.getPower() - bu.quantity.getPower(), this.defPower); //TODO Not sure if defPower is correct
+			return new BU(this, this.quantity.getPower() - bu.quantity.getPower());
 		} else {
 			throw new UnitMismatchException(String.format("Base unit division error: %s / %s.", this.longName(), bu.longName()));
 		}
 	}
 	
 	public BU inverse() {
-		return new BU(this, -this.quantity.getPower(), this.defPower);
+		return new BU(this, -this.quantity.getPower());
 	}
 	
 	public double getLength() {
-		return Math.pow(length, getPower() / getDefPower());
+		return Math.pow(length, getPower());
 	}
 	
 	public int getPower() {
 		return quantity.getPower();
-	}
-	
-	public int getDefPower() {
-		return defPower;
 	}
 	
 	public double getOffset() {
@@ -143,12 +133,15 @@ public class BU { // Base Unit
 	public Base getQuantityBase() {
 		return quantity.getBase();
 	}
+
+	public Quantity getQuantity() {
+		return quantity;
+	}
 	
 	public String shortName(boolean inverted) {
 		int p = quantity.getPower();// - (defPower - 0);
 		if (inverted) p = -p;
-		int displayPower = 0;
-		if (defPower != 0) displayPower = p/defPower;
+		int displayPower = p;
 		//System.out.println(shortName);
 		return getPowerShortName(shortName, displayPower);
 	}
@@ -160,7 +153,7 @@ public class BU { // Base Unit
 	public String longName(boolean inverted) {
 		int p = quantity.getPower();// - (defPower - 0);
 		if (inverted) p = -p;
-		return getPowerLongName(longName, p/defPower);
+		return getPowerLongName(longName, p);
 	}
 	
 	public String longName() {
