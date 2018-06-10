@@ -1,7 +1,6 @@
 import java.util.*;
-
 /**
- * Compund Unit
+ * Compound Unit, a unit with one or more quantities.
  * <p>
  * Class and methods primarily for defining, calculating and converting between units of basic and compounded quantities.
  * <p>

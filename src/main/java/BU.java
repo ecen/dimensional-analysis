@@ -1,7 +1,7 @@
-/** Base Unit
+/** Base Unit, a unit with exactly one quantity.
  *
  * Most importantly defined by quantity and length.
- * Length is what relates this unit to other units of the same quantity.
+ * Length relates this unit to other units of the same quantity.
  *
  * Ex: M defined as DISTANCE of length 1.
  * 	 Then KM defined as DISTANCE of length 1000.

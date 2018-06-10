@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 /**
- * Unit Vector
+ * Unit Value, a value with a compound unit.
  * <p>
  * A compound unit with a value. This value is not the same as unit length.
  * <p>
