@@ -43,6 +43,9 @@ public class UnitTests {
 		U carl = new U(U.M.div(U.KG), 0.025, "carl", "carl");
 		Assert.assertEquals(new UV(2, carl).mul(new UV(2, carl)), new UV(2, carl).mul(new UV(2, carl)).convert(U.M.mul(U.M).div(U.KG).div(U.KG)));
 		Assert.assertEquals(new UV(2, carl).mul(new UV(2, carl)).convert(U.M.mul(U.M).div(U.KG).div(U.KG)), new UV(2, carl).pow(2));
+
+		// Power less than 1 works
+		Assert.assertEquals("1.73 carl^0.5",new UV(3, carl).pow(1.0/2).toString());
 	}
 
 	@Test

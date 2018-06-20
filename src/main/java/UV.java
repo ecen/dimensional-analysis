@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Unit Value, a value with a compound unit.
@@ -14,9 +16,6 @@ public class UV implements Comparable<UV> { // Unit Vector
 
 	private double value; // The value of this vector
 	private U unit;
-
-	//This is the value that two UV's may differ (due to floating point errors) and still be considered equal.
-	private static final double maxError = 0.0000000000000000000001;
 
 	public UV(double value, U unit) {
 		this.value = value;
@@ -124,9 +123,10 @@ public class UV implements Comparable<UV> { // Unit Vector
 	public UV pow(double p) throws UnitMismatchException{
 		//System.out.println("Powering.");
 		U u = this.unit.pow(p);
+		//System.out.println("UV pow: " + Arrays.toString(u.components.toArray()));
 		U root = u.pow(1.0/p);
-		//System.out.printf("Powering %s with length %e to %f. Unit will be %s with length %e and root is %s.\n", this, unit().getLength(), p, u, u.getLength(), root);
-		//System.out.printf("%s should have length %e\n", u, this.mul(this).unit().getLength());
+		//System.out.printf("Powering %s with length %e to %f. Unit will be %s with length %e and root is %s.\n",
+		//		  this, unit().getLength(), p, u, u.getLength(), root.getDerivedName());
 		UV result = null;
 		try {
 			result = new UV(Math.pow(this.convert(root).value, p), u);

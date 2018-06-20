@@ -159,10 +159,10 @@ public class U { // Compound Unit
 		v.longCompoundName = longCompoundName;
 		v.compoundPower = u.compoundPower * compoundPower;
 		//System.out.printf("Set compound power to %f from %f times %f.\n", v.compoundPower, u.compoundPower, compoundPower);
-
+		//System.out.println("U pow: " + Arrays.toString(u.components.toArray()));
 		for (BU bu : u.components) {
-			bu = new BU(bu, bu.getPower()).pow(compoundPower);
-			//System.out.printf("Compound: %s, %s, power: %d\n", shortCompoundName, bu, bu.getPower());
+			bu = bu.pow(compoundPower);
+			//System.out.printf("Compound: %s, %s, power: %e\n", shortCompoundName, bu, bu.getPower());
 			addComponent(bu, v.components);
 		}
 		//System.out.printf("Compound: %s to the power of %f derived as %s.\n", v.shortCompoundName, v.compoundPower, v.getDerivedName());
@@ -232,14 +232,14 @@ public class U { // Compound Unit
 	 * @return the reduced compound unit.
 	 */
 	public U reduce() {
-		int qs[] = new int[Base.values().length];
+		double qs[] = new double[Base.values().length];
 		for (BU bu : components) {
 			qs[bu.getQuantityBase().ordinal()] += bu.getPower();
 		}
 
 		U result = new U();
 		for (BU bu : components) {
-			if (qs[bu.getQuantityBase().ordinal()] != 0) {
+			if (Util.compareDouble(qs[bu.getQuantityBase().ordinal()], 0) != 0) {
 				U.addComponent(new BU(bu, qs[bu.getQuantityBase().ordinal()]), result.components);
 				qs[bu.getQuantityBase().ordinal()] = 0;
 			}
