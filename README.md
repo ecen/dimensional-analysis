@@ -17,7 +17,7 @@ UV f = new UV(5, newton).add(new UV(3, newton));
 System.out.println(f); // Prints "8.00 kg * m / s^2".
 ```
 
-It is also possible to possible to properly define new units. If we wanted to define Newton as above, but give it a proper name, we can do like this:
+It is also possible define new units from scratch. If we wanted to define Newton as above, but give it a proper name, we can do like this:
 ```java
 U newton = new U(U.KG.mul(U.M).div(U.S.pow(2)), 1, "N", "Newton");
 UV f = new UV(5, newton).add(new UV(3, newton));
@@ -38,11 +38,3 @@ U M = new U(1, "m", "meter", new Quantity(Base.DISTANCE, 1));
 ```
 
 One thing to note is that the first 1 here is the absolute length that will be used in the internal representation of this unit and could essentially be any number. The length given to units defined on meter is in relative terms to this number.
-
-
-## Release and Documentation
-If you think this is something you would like to use, you can download the library from its git repo or read the full documentation.
-
-Find the latest release at [github.com/ecen/unit](https://github.com/ecen/unit/).
-
-Read the entire javadoc at [ecen.github.io/unit](https://ecen.github.io/unit/).
