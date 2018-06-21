@@ -1,3 +1,5 @@
+package io.github.ecen.unit;
+
 import java.util.*;
 /**
  * Compound Unit, a unit with one or more quantities.

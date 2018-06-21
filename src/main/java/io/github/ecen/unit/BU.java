@@ -1,3 +1,5 @@
+package io.github.ecen.unit;
+
 /** Base Unit, a unit with exactly one quantity.
  *
  * Most importantly defined by quantity and length.

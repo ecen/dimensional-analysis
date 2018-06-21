@@ -1,3 +1,5 @@
+package io.github.ecen.unit;
+
 /** Quantity, a base dimension and a power.
  *
  * Ex: DISTANCE of power 2 represents AREA but allows AREA / DISTANCE = DISTANCE

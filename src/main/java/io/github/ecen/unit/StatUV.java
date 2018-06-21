@@ -1,3 +1,5 @@
+package io.github.ecen.unit;
+
 public class StatUV {
 
 	private UV unitValue;
