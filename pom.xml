@@ -4,9 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <name>Dimensional Analysis Library: Unit</name>
+    <url>https://github.com/ecen/unit/</url>
+
     <groupId>io.github.ecen.unit</groupId>
     <artifactId>unit</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0-beta</version>
+    <packaging>jar</packaging>
+
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -24,5 +29,26 @@
         <maven.compiler.source>10</maven.compiler.source>
         <maven.compiler.target>10</maven.compiler.target>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <destDir>docs</destDir>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
