@@ -1,6 +1,6 @@
 # Unit
 
-[**Latest Release**](https://github.com/ecen/unit/releases/latest)
+To use, download the [**latest release**](https://github.com/ecen/unit/releases/latest) jar files and add them to your project structure or classpath. To have your IDE display the javadoc you need to attach the javadoc jar together with the main jar. (If you're unsure of how to do this, consult the manual of your IDE on how to add a library to your project.)
 
 ## Background
 This is a small Java library that makes it easier to work with variables modeling physical quantities. It does this by attaching physical quantities, units, to variables in order to perform dimensional analysis. It will stop you from doing undefined operations like `2 m + 2 kg`, but allow legal ones like `2 m * 2 kg = 4 kg*m`. It is also easy to define entirely custom units.
