@@ -1,4 +1,4 @@
-package io.github.ecen.unit;
+package io.guldbrand.unit;
 
 /**
  * Unit Value, a value with a compound unit.
@@ -25,9 +25,9 @@ public class UV implements Comparable<UV> { // Unit Vector
 		this.unit = uv.unit;
 	}
 	
-	/**
-	 * @param to The Unit to convert to.
-	 * @return A UV with the same value as this one but expressed in a different unit.
+	/** Converts this UnitValue to another Unit.
+	 * @param to the Unit to convert to.
+	 * @return a UnitValue with the same value as this one but expressed in a different unit.
 	 *
 	 * @throws UnitMismatchException If this unit can't be converted to the target unit. (If they don't share the same quantity.)
 	 */
@@ -42,11 +42,11 @@ public class UV implements Comparable<UV> { // Unit Vector
 		return new UV((this.value * unit.getLength()) / to.getLength(), to);
 	}
 	
-	/** Converts this unit accounting for offset. Use this for converting between scales, such as X Fahrenheit into Y Celsius.
-	 * @param to
-	 * @return
+	/** Converts this unit while accounting for offset. Use this for converting between scales, such as X Fahrenheit into Y Celsius.
+	 * @param to the Unit to convert to.
+	 * @return a UV with the same value as this one but expressed in a different unit.
 	 *
-	 * @throws UnitMismatchException
+	 * @throws UnitMismatchException if this unit cannot be converted to the target one.
 	 */
 	public UV convertAbsolute(U to) throws UnitMismatchException {
 		UV result = this.convert(to);
@@ -54,6 +54,12 @@ public class UV implements Comparable<UV> { // Unit Vector
 		return result;
 	}
 
+	/**
+	 * Adds another UnitValue to this one and returns the resulting UnitValue.
+	 * @param uv the UnitValue to add to this one.
+	 * @return a UnitValue representing the sum of this and the other UnitValue.
+	 * @throws UnitMismatchException if the Units of the UnitValues are not of the same Quantity.
+	 */
 	public UV add(UV uv) throws UnitMismatchException {
 		UV result;
 		if (unit.isSameQuantity(uv.unit)) {
@@ -64,18 +70,31 @@ public class UV implements Comparable<UV> { // Unit Vector
 		return result;
 	}
 
+	/** Like {@link UV#add(UV uv)} but the UnitValue to add is specified as a value and a Unit.*/
 	public UV add(double value, U u) throws UnitMismatchException {
 		return add(new UV(value, u));
 	}
 
+	/**
+	 * Subtracts another UnitValue from this one and returns the resulting UnitValue.
+	 * @param uv the UnitValue to subtract from this one.
+	 * @return a UnitValue representing the difference of this and the other UnitValue.
+	 * @throws UnitMismatchException if the Units of the UnitValues are not of the same Quantity.
+	 */
 	public UV sub(UV uv) throws UnitMismatchException {
-		return add(uv.neg());
+		return add(uv.negate());
 	}
 
+	/** Like {@link UV#sub(UV uv)} but the UnitValue to subtract is specified as a value and a Unit.*/
 	public UV sub(double value, U u) throws UnitMismatchException {
 		return sub(new UV(value, u));
 	}
 
+	/**
+	 * Multiplies another UnitValue with this one and returns the resulting UnitValue.
+	 * @param uv the UnitValue to multiply with this one.
+	 * @return a UnitValue representing the product of this and the other UnitValue.
+	 */
 	public UV mul(UV uv) {
 		UV result = uv;
 		U resultUnit;
@@ -106,19 +125,31 @@ public class UV implements Comparable<UV> { // Unit Vector
 		return result;
 	}
 
+	/** Like {@link UV#mul(UV uv)} but the UnitValue to multiply with is specified as a value and a Unit.*/
 	public UV mul(double value, U u) {
 		return mul(new UV(value, u));
 	}
 
+	/**
+	 * Divides this UnitValue with another and returns the resulting UnitValue.
+	 * @param uv the UnitValue to divide this one by.
+	 * @return a UnitValue representing the quotient of this and the other UnitValue.
+	 */
 	public UV div(UV uv) {
 		return this.mul(uv.inverse());
 	}
 
+	/** Like {@link UV#div(UV uv)} but the UnitValue to divide with is specified as a value and a Unit.*/
 	public UV div(double value, U u) {
 		return div(new UV(value, u));
 	}
-	
-	public UV pow(double p) throws UnitMismatchException{
+
+	/**
+	 * Raise this UnitValue to a power.
+	 * @param p the value to raise this UnitValue to.
+	 * @return a UnitValue representing this UnitValue raised to the given power.
+	 */
+	public UV pow(double p) {
 		//System.out.println("Powering.");
 		U u = this.unit.pow(p);
 		//System.out.println("UV pow: " + Arrays.toString(u.components.toArray()));
@@ -135,33 +166,32 @@ public class UV implements Comparable<UV> { // Unit Vector
 		return result;
 	}
 	
-	/** Invert this unit but essentially retain its value (although the value is also inverted).
+	/** Invert this UnitValue. This will invert the value of this UnitValue and negate the exponent of its Unit.
 	 * Ex: inverse(2 m^2) = 1/2 m^-2
 	 *
-	 * @return A UV with inverted unit and with newValue = 1 / oldValue.
+	 * @return a UV with inverted unit and with newValue = 1 / oldValue.
 	 */
 	public UV inverse() {
 		return new UV(1.0 / value, unit.inverse());
 	}
 
 	/**
-	 * Negate.
+	 * Negate this UnitValue.
 	 *
-	 * @return A UV with the same unit vector but negative value compared to before.
+	 * @return a UnitValue with the same Unit but negative value compared to this one.
 	 */
-	public UV neg() {
+	public UV negate() {
 		return new UV(-value, unit);
 	}
 
 	/**
-	 * Negate a percentage.
+	 * Negate this UnitValue as a percentage.
 	 *
 	 * @return A UV with the value 1 - this.value()
 	 */
-	public UV negPercent() {
+	public UV negatePercent() {
 		return new UV(1 - this.value(), this.unit());
 	}
-
 
 	/**
 	 * Compares two compatible unit vectors and returns the largest of them.
@@ -203,10 +233,18 @@ public class UV implements Comparable<UV> { // Unit Vector
 		}
 	}
 
+	/**
+	 * Returns the value of this UnitValue in the Unit it is currently in.
+	 * @return the value of this UnitValue in the Unit it is currently in.
+	 */
 	public double value() {
 		return value;
 	}
 
+	/**
+	 * Returns the Unit of this UnitValue.
+	 * @return the Unit of this UnitValue.
+	 */
 	public U unit() {
 		return unit;
 	}
@@ -221,6 +259,9 @@ public class UV implements Comparable<UV> { // Unit Vector
 		this.unit = uv.unit();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
@@ -234,6 +275,9 @@ public class UV implements Comparable<UV> { // Unit Vector
 		return compareTo(uv) == 0;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int compareTo(UV uv) {
 		try {

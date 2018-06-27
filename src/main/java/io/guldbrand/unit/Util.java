@@ -1,6 +1,6 @@
-package io.github.ecen.unit;
+package io.guldbrand.unit;
 
-public class Util {
+class Util {
 
     public static double epsilon = 0.000000000000001;
 

@@ -1,4 +1,4 @@
-package io.github.ecen.unit;
+package io.guldbrand.unit;
 
 /** Quantity, a base dimension and a power.
  *
@@ -10,6 +10,13 @@ public class Quantity {
 	private Base base;
 	private double power;
 	
+	/**
+	 * Creates a new quantity with a certain base and power.
+	 * Ex: A Quantity representing volume should be DISTANCE to the power of 3.
+	 *
+	 * @param base the base dimension of this quantity.
+	 * @param power the power of the base dimension this quantity should represent.
+	 */
 	public Quantity(Base base, double power) {
 		// Power == 0 or NONE both mean the same thing
 		if (power == 0 || base.equals(Base.NONE)) {
@@ -38,11 +45,11 @@ public class Quantity {
 	    return false;
 	}
 
-	public Base getBase() {
+	Base getBase() {
 		return base;
 	}
 
-	public double getPower() {
+	double getPower() {
 		return power;
 	}
 

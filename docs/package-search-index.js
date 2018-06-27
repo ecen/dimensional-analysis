@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"io.github.ecen.unit"}]
+packageSearchIndex = [{"l":"io.guldbrand.unit"}]

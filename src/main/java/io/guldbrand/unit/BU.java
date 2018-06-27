@@ -1,4 +1,4 @@
-package io.github.ecen.unit;
+package io.guldbrand.unit;
 
 /** Base Unit, a unit with exactly one quantity.
  *
@@ -15,7 +15,7 @@ package io.github.ecen.unit;
  * 	 This will mean that 1 cc = 1 cm^3.
  * 	 (If we used defPower 1, cc would be displayed as cc^3 and we would have 1 cc^3 = 1 cm^3.)
  */
-public class BU { // Base Unit
+class BU { // Base Unit
 	
 	private final double length;
 	private final Quantity quantity;

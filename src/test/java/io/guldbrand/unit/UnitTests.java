@@ -1,23 +1,23 @@
-import io.github.ecen.unit.U;
-import io.github.ecen.unit.UV;
-import io.github.ecen.unit.UnitMismatchException;
-import io.github.ecen.unit.Util;
+package io.guldbrand.unit;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 
 public class UnitTests {
 	
+	private static double epsilon = 0.000000000000001;
+	
 	@Test
 	public void generalU() throws UnitMismatchException {
 		Assert.assertEquals(U.M.pow(2), U.M.mul(U.M));
 		
 		U dms = new U(U.M.pow(2), 2, "DMS", "DoubleMeterSq");
-		Assert.assertEquals(U.M.pow(2).getLength() * 2, dms.getLength(), Util.epsilon);
+		Assert.assertEquals(U.M.pow(2).getLength() * 2, dms.getLength(), epsilon);
 		
 		U ddms = new U(U.DM.pow(2), 2, "DDMS", "DoubleDeciMeterSq");
-		Assert.assertEquals(U.DM.pow(2).getLength() * 2, ddms.getLength(), Util.epsilon);
-		Assert.assertEquals( Math.pow(0.1, 2) * 2, ddms.getLength(), Util.epsilon);
+		Assert.assertEquals(U.DM.pow(2).getLength() * 2, ddms.getLength(), epsilon);
+		Assert.assertEquals( Math.pow(0.1, 2) * 2, ddms.getLength(), epsilon);
 	}
 	
 	@Test

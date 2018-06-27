@@ -1,4 +1,4 @@
-package io.github.ecen.unit;
+package io.guldbrand.unit;
 
 /** Base Dimension, represents a dimension such as DISTANCE or MASS that are distinctively separate from each other.
  *

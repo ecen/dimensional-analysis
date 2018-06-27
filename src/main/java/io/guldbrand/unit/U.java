@@ -1,4 +1,4 @@
-package io.github.ecen.unit;
+package io.guldbrand.unit;
 
 import java.util.*;
 /**
@@ -23,9 +23,9 @@ public class U { // Compound Unit
 	//Static list containing all created units. Used for parsing, lookup etc.
 	//private static ArrayList<U> units = new ArrayList<U>();
 
-	public static final U NONE = new U(1, "none", "none", new Quantity(Base.NONE));
+	public static final U NONE = new U("none", "none", new Quantity(Base.NONE));
 
-	public static final U M = new U(1, "m", "meter", new Quantity(Base.DISTANCE));
+	public static final U M = new U("m", "meter", new Quantity(Base.DISTANCE));
 	public static final U MM = new U(M, 1.0 / 1000, "mm", "millimeter");
 	public static final U CM = new U(M, 1.0 / 100, "cm", "centimeter");
 	public static final U DM = new U(M, 1.0 / 10, "dm", "decimeter");
@@ -46,7 +46,7 @@ public class U { // Compound Unit
 	public static final U GALLON = new U(PINT, 8, "gal", "gallon");
 	public static final U BARREL = new U(GALLON, 31.5, "barrel", "barrel");
 
-	public static final U G = new U(1, "g", "gram", new Quantity(Base.MASS));
+	public static final U G = new U("g", "gram", new Quantity(Base.MASS));
 	public static final U KG = new U(G, 1000, "kg", "kilogram");
 	public static final U TON = new U(KG, 1000, "tonne", "metric ton");
 	public static final U OUNCE = new U(G, 28.349523125, "oz", "ounce");
@@ -54,7 +54,7 @@ public class U { // Compound Unit
 	public static final U TON_UK = new U(POUND, 2240, "ton", "long ton");
 	public static final U TON_US = new U(POUND, 2000, "ton", "short ton");
 
-	public static final U S = new U(1, "s", "second", new Quantity(Base.TIME));
+	public static final U S = new U("s", "second", new Quantity(Base.TIME));
 	public static final U MS = new U(S, 0.001, "ms", "millisecond");
 	public static final U MIN = new U(S, 60, "min", "minute");
 	public static final U H = new U(MIN, 60, "h", "hour");
@@ -63,10 +63,10 @@ public class U { // Compound Unit
 	public static final U YEAR = new U(DAY, 365.25, "year", "year");
 	public static final U MONTH = new U(YEAR, 1.0 / 12, "month", "month");
 
-	public static final U RADIAN = new U(1, "rad", "radian", new Quantity(Base.ROTATION));
+	public static final U RADIAN = new U("rad", "radian", new Quantity(Base.ROTATION));
 	public static final U DEGREE = new U(RADIAN, 0.0174533, "deg", "degree");
 
-	public static final U KELVIN = new U(1, "K", "kelvin", new Quantity(Base.TEMPERATURE));
+	public static final U KELVIN = new U("K", "kelvin", new Quantity(Base.TEMPERATURE));
 	//public static final U CELSIUS = new U(KELVIN, 1, 273.15, "°C", "celsius"); // TODO Enable offset
 	//public static final U FAHRENHEIT = new U(CELSIUS, 5.0 / 9.0, 459.67, "°F", "fahrenheit");
 
@@ -95,11 +95,25 @@ public class U { // Compound Unit
 
 		this.components.addAll(u.components);
 	}
-
-	public U (double length, String shortName, String longName, Quantity quantity){
-		this(baseUnitFactory(new BU(length, shortName, longName, quantity)));
+	
+	/**
+	 * Creates a new Unit from scratch. If there already exists a Unit that you want to base a new one on, use {@link U(U, double, String, String)} instead.}
+	 * @param shortName the short name or abbreviation for this unit. For the SI-unit meter this would be "m".
+	 * @param longName the long name for this unit. For the SI-unit meter this would be "meter".
+	 * @param quantity the quantity that this unit will represent.
+	 */
+	public U (String shortName, String longName, Quantity quantity){
+		this(baseUnitFactory(new BU(1, shortName, longName, quantity)));
 	}
-
+	
+	/**
+	 * Defines a new Unit based on another. The new unit will have the same Quantity as the old one but can be given a different length and name.
+	 *
+	 * @param u the Unit this unit will have the same quantity as.
+	 * @param compoundLength the length of this unit compared to the other Unit. For the SI-unit millimeter this would be 0.001 if the other Unit was meter.
+	 * @param shortName the short name or abbreviation for this unit. For the SI-unit meter this would be "m".
+	 * @param longName the long name for this unit. For the SI-unit meter this would be "meter".
+	 */
 	public U(U u, double compoundLength, String shortName, String longName){
 		this(unitFactory(u, compoundLength, shortName, longName, 1));
 	}
@@ -173,10 +187,10 @@ public class U { // Compound Unit
 	}
 
 	/**
-	 * Multiply this unit with another unit.
+	 * Multiply this Unit with another Unit.
 	 *
-	 * @param a the unit to multiply with.
-	 * @return The resulting (compound) unit.
+	 * @param a the Unit to multiply with.
+	 * @return The resulting Unit.
 	 */
 	public U mul(U a) { // TODO Compound name disappears here. Solve by implementing compound unit name recognition.
 		U u = new U();
@@ -215,7 +229,7 @@ public class U { // Compound Unit
 	}
 
 	/**
-	 * Equivalent to pow(-1)
+	 * Calculate the inverse of this unit. This is equivalent to pow(-1).
 	 *
 	 * @return The resulting inverted unit.
 	 */
@@ -230,6 +244,8 @@ public class U { // Compound Unit
 
 	/**
 	 * Checks the unit for multiple instances of the same quantity and combines them.
+	 *
+	 * This will for instance convert ( m^2 / m ) to ( m ).
 	 *
 	 * @return the reduced compound unit.
 	 */
@@ -299,21 +315,29 @@ public class U { // Compound Unit
 	}
 
 	/**
-	 * @param b the target unit
-	 * @return the unit that you should multiply with to get the other unit.
+	 * Calculates and the Unit that is the dimensional difference between this Unit and another.
+	 * That will be the unit you should multiply this unit with to get the target unit.
+	 *
+	 * Ex: meter.dimDiff( kg ) will return the unit ( kg / m ).
+	 *
+	 * @param b the target Unit.
+	 * @return a Unit representing the dimensional difference between this and target unit.
 	 **/
 	public U dimDiff(U b) {
 		return U.dimDiff(this, b);
 	}
-
+	
 	/**
-	 * Dimension Difference
+	 * Calculates and the Unit that is the dimensional difference between Unit A and Unit B.
+	 * That will be the unit you should multiply A with to get B.
 	 *
-	 * @param a source unit
-	 * @param b target unit
-	 * @return The unit that you should multiply a with to get b.
+	 * Ex: dimDiff( meter, kg ) will return the unit ( kg / m ).
+	 *
+	 * @param a the unit that can be multiplied with returned value to get B.
+	 * @param b the other unit.
+	 * @return a Unit representing the dimensional difference between this and target unit.
 	 **/
-	private static U dimDiff(U a, U b) {
+	public static U dimDiff(U a, U b) {
 		// System.out.format("A: %s, B: %s \n", a, b);
 		U diff = new U();
 		for (BU c : a.components) {
@@ -330,7 +354,7 @@ public class U { // Compound Unit
 	/**
 	 * Checks whether or not this unit and unit b has the same total quantity. (Basically if they could be added.)
 	 *
-	 * @param b the unit to check against
+	 * @param b the unit to check against.
 	 * @return True iff the units have the same quantity.
 	 */
 	public boolean isSameQuantity(U b) {
@@ -355,7 +379,7 @@ public class U { // Compound Unit
 		return this.dimDiff(u).components.size() == 0 && Util.compareDouble(this.getLength(), u.getLength()) == 0;
 	}
 
-	public double getLength() {
+	double getLength() {
 		double len = 1;
 		String s = "[";
 		s += String.format(" %f ", len);
@@ -368,7 +392,7 @@ public class U { // Compound Unit
 		return len * compoundLength;
 	}
 
-	public double getOffset() {
+	double getOffset() {
 		double offset = 0;
 		for (BU u : components) {
 			offset += u.getOffset(); // Offset for compound units is not yet really defined. 
@@ -429,7 +453,11 @@ public class U { // Compound Unit
 		}
 		return sum;
 	}
-
+	
+	/**
+	 * Returns the derived name for this unit.
+	 * @return the derived name of this unit.
+	 */
 	public String getDerivedName() {
 		// Sort components
 		ArrayList<BU> mults = new ArrayList<BU>(0);
@@ -477,17 +505,6 @@ public class U { // Compound Unit
 		return s;
 	}
 
-	public U toCompound(){
-		allUnits.sort(new Comparator<U>() {
-			@Override
-			public int compare(U o1, U o2) {
-				return getSizeMeasurement(o2) - getSizeMeasurement(o1);
-			}
-		});
-		//System.out.println(allUnits);
-		return allUnits.get(0);
-	}
-
 	public String toString() {
 		String s = "";
 		if (!shortCompoundName.equals("")) {
@@ -507,7 +524,7 @@ public class U { // Compound Unit
 		return String.format("%s", s);
 	}
 
-	public String debugString() {
+	String debugString() {
 		String s = "{";
 		for (BU bu : components) {
 			s += String.format("[n:%s,  p:%s, l: %s, q: %s] ", bu.shortName(), bu.getPower(), bu.getLength(), bu.getQuantityBase());

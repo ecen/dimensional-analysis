@@ -1,6 +1,6 @@
-package io.github.ecen.unit;
+package io.guldbrand.unit;
 
-public class StatUV {
+class StatUV { // Package private until done. Should maybe be a different project.
 
 	private UV unitValue;
 	

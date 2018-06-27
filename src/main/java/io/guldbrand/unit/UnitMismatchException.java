@@ -1,4 +1,4 @@
-package io.github.ecen.unit;
+package io.guldbrand.unit;
 
 /**
  * Represents an illegal conversion or arithmetic operation.
