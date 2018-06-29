@@ -44,4 +44,4 @@ One thing to note is that the first 1 here is the absolute length that will be u
 
 ## Further Reading
 
-The project is presented [here](http://eric.guldbrand.io/portfolio/unit/) and you can read the full [javadoc](http://eric.guldbrand.io/unit/io/guldbrand/unit/package-summary.html).
+The project is presented [here](http://eric.guldbrand.io/portfolio/unit/) and you can also read the full [javadoc](http://eric.guldbrand.io/unit/io/guldbrand/unit/package-summary.html).
