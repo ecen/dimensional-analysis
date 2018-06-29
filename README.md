@@ -1,6 +1,6 @@
 # Unit
 
-A small Java library that makes it easier to work with and convert variables with different units. It makes sure you only perform valid operations while also allowing you to define entirely custom units.
+A small Java library that makes it easier to work with and convert variables to different units. It makes sure you only perform valid operations while also allowing you to define entirely custom units. Calculations are done at runtime and invalid statements will raise exceptions.
 
 ## Usage and Installation
 Download the [**latest release**](https://github.com/ecen/unit/releases/latest) jar files and add them to your project structure or classpath. To have your IDE display the javadoc you need to attach the javadoc jar together with the main jar. (If you're unsure of how to do this, consult the manual of your IDE on how to add a library to your project.)
