@@ -41,3 +41,7 @@ U M = new U(1, "m", "meter", new Quantity(Base.DISTANCE, 1));
 ```
 
 One thing to note is that the first 1 here is the absolute length that will be used in the internal representation of this unit and could essentially be any number. The length given to units defined on meter is in relative terms to this number.
+
+## Further Reading
+
+The project is presented [here](http://eric.guldbrand.io/portfolio/unit/) and you can read the full [javadoc](http://eric.guldbrand.io/unit/io/guldbrand/unit/package-summary.html).
