@@ -1,6 +1,10 @@
 # Unit
 
-To use, download the [**latest release**](https://github.com/ecen/unit/releases/latest) jar files and add them to your project structure or classpath. To have your IDE display the javadoc you need to attach the javadoc jar together with the main jar. (If you're unsure of how to do this, consult the manual of your IDE on how to add a library to your project.)
+## Usage and Installation
+Download the [**latest release**](https://github.com/ecen/unit/releases/latest) jar files and add them to your project structure or classpath. To have your IDE display the javadoc you need to attach the javadoc jar together with the main jar. (If you're unsure of how to do this, consult the manual of your IDE on how to add a library to your project.)
+
+## License
+This project is distributed under the [GNU LGPLv3](https://choosealicense.com/licenses/lgpl-3.0/) license. This means that any improvements or modifications must be shared under the same license, but larger works using this library may use it without such restrictions. Read the LICENSE file for the full statement.
 
 ## Background
 This is a small Java library that makes it easier to work with variables modeling physical quantities. It does this by attaching physical quantities, units, to variables in order to perform dimensional analysis. It will stop you from doing undefined operations like `2 m + 2 kg`, but allow legal ones like `2 m * 2 kg = 4 kg*m`. It is also easy to define entirely custom units.
