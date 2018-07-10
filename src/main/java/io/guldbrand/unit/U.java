@@ -97,7 +97,7 @@ public class U { // Compound Unit
 	}
 	
 	/**
-	 * Creates a new Unit from scratch. If there already exists a Unit that you want to base a new one on, use {@link U(U, double, String, String)} instead.}
+	 * Creates a new Unit from scratch. If there already exists a Unit that you want to base a new one on, use {@link #U(U, double, String, String)} instead.}
 	 * @param shortName the short name or abbreviation for this unit. For the SI-unit meter this would be "m".
 	 * @param longName the long name for this unit. For the SI-unit meter this would be "meter".
 	 * @param quantity the quantity that this unit will represent.
