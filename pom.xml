@@ -9,7 +9,7 @@
 
     <groupId>io.guldbrand.unit</groupId>
     <artifactId>unit</artifactId>
-    <version>0.2.0-beta</version>
+    <version>0.2.1-beta</version>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -26,8 +26,8 @@
     </dependencies>
 
     <properties>
-        <maven.compiler.source>10</maven.compiler.source>
-        <maven.compiler.target>10</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
